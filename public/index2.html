@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+    .links line {
+        stroke: #999;
+        stroke-opacity: 0.6;
+    }
+
+    .nodes circle {
+        stroke: #fff;
+        stroke-width: 1.5px;
+    }
+
+</style>
+<svg width="2500" height="2500"></svg>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://d3js.org/d3-dsv.v1.min.js"></script>
+<script>
+
+    var svg = d3.select("svg"),
+            width = +svg.attr("width"),
+            height = +svg.attr("height");
+
+    var color = d3.scaleOrdinal(d3.schemeCategory20);
+
+    var simulation = d3.forceSimulation()
+            .force("link", d3.forceLink().id(function(d) { return d.id; }))
+            .force("charge", d3.forceManyBody())
+            .force("center", d3.forceCenter(width / 2, height / 2));
+
+    var nodesmap = {};
+    var linkVal = {};
+    var links = [];
+    var nodes = [];
+    var uniqueIndex = 0;
+
+
+    var dsv = d3.dsvFormat(" ");
+
+    d3.text("../data/tcpdump.csv").get(function(error,rows){
+
+        if (error) throw error;
+        var data = dsv.parse(rows);
+
+        data.forEach(function (d){
+            if (!nodesmap.hasOwnProperty(d.src)) {
+                nodesmap[d.src] = d.src;
+            }
+            if (!nodesmap.hasOwnProperty(d.dest)) {
+                nodesmap[d.dest] = d.dest;
+            }
+
+            var src = nodesmap[d.src];
+            var dest = nodesmap[d.dest];
+
+            if(!linkVal.hasOwnProperty(src)){
+                linkVal[src] = {}
+            }
+            if(!linkVal[src].hasOwnProperty(dest)){
+                linkVal[src][dest] = 0;
+            }
+
+            linkVal[src][dest]++;
+        });
+
+        for(var src in linkVal){
+            for(var dest in linkVal[src]){
+                var val = linkVal[src][dest];
+                links.push({value:val,source:src,target:dest})
+            }
+        }
+
+
+        for(var key in nodesmap){
+            nodes.push({id: nodesmap[key], group: 1});
+        }
+
+        var link = svg.append("g")
+                .attr("class", "links")
+                .selectAll("line")
+                .data(links)
+                .enter().append("line")
+                .attr("stroke-width", function(d) { return Math.sqrt(d.value); });
+
+        var node = svg.append("g")
+                .attr("class", "nodes")
+                .selectAll("circle")
+                .data(nodes)
+                .enter().append("circle")
+                .attr("r", 5)
+                .attr("fill", function(d) { return color(d.group); })
+                .call(d3.drag()
+                        .on("start", dragstarted)
+                        .on("drag", dragged)
+                        .on("end", dragended));
+
+
+        node.append("title")
+                .text(function(d) { return d.id; });
+
+        simulation
+                .nodes(nodes)
+                .on("tick", ticked);
+
+        simulation.force("link")
+                .links(links);
+
+        function ticked() {
+            link
+                    .attr("x1", function(d) { return d.source.x; })
+                    .attr("y1", function(d) { return d.source.y; })
+                    .attr("x2", function(d) { return d.target.x; })
+                    .attr("y2", function(d) { return d.target.y; });
+
+            node
+                    .attr("cx", function(d) { return d.x; })
+                    .attr("cy", function(d) { return d.y; });
+        }
+    });
+
+    function dragstarted(d) {
+        if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+    }
+
+    function dragged(d) {
+        d.fx = d3.event.x;
+        d.fy = d3.event.y;
+    }
+
+    function dragended(d) {
+        if (!d3.event.active) simulation.alphaTarget(0);
+        d.fx = null;
+        d.fy = null;
+    }
+
+</script>
