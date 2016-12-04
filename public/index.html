@@ -1,135 +1,14 @@
-<!--<!DOCTYPE html>-->
-<!--<html lang="en">-->
-<!--<head>-->
-    <!--<meta charset="UTF-8">-->
-    <!--<title>Darpa IDS Visualization</title>-->
-<!--</head>-->
-<!--<body>-->
-<!--<script data-main="../public/js/main" src="../bower_components/requirejs/require.js"></script>-->
-
-<!--</body>-->
-<!--</html>-->
-
 <!DOCTYPE html>
-<meta charset="utf-8">
-<canvas width="960" height="960"></canvas>
-<!--<script src="../bower_components/d3/d3.js"></script>-->
-<script>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Darpa IDS Visualization</title>
+</head>
+<body>
+<script data-main="../public/js/main" src="../bower_components/requirejs/require.js"></script>
+<div style="width:80%; height: 80%; overflow-y: scroll;">
+    <svg width="2500" height="2500"></svg>
+</div>
+</body>
+</html>
 
-//    var nodesmap = {};
-//    var linkVal = {};
-//    var links = [];
-//    var nodes = [];
-//    var uniqueIndex = 0;
-//    d3.csv("../data/tcpdump.csv",function(data) {
-//        data.forEach(function (d){
-//            if (!nodesmap.hasOwnProperty(d.src)) {
-//                nodesmap[d.src] = d.src;
-//            }
-//            if (!nodesmap.hasOwnProperty(d.dest)) {
-//                nodesmap[d.dest] = d.dest;
-//            }
-//
-//            var src = nodesmap[d.src];
-//            var dest = nodesmap[d.dest];
-//
-//            if(!linkVal.hasOwnProperty(src)){
-//                linkVal[src] = {}
-//            }
-//            if(!linkVal[src].hasOwnProperty(dest)){
-//                linkVal[src][dest] = 0;
-//            }
-//
-//            linkVal[src][dest]++;
-//        });
-//
-//        for(var src in linkVal){
-//            for(var dest in linkVal[src]){
-//                var val = linkVal[src][dest];
-//                links.push({value:val,source:src,target:dest})
-//            }
-//        }
-//
-//
-//        var nodekeys = d3.keys(nodesmap);
-//        nodekeys.forEach(function(ip){
-//            nodes.push({index: ip});
-//        })
-//
-//        console.log(nodes)
-//        console.log(links)
-//
-//        var simulation = d3.forceSimulation(nodes)
-//                .force("charge", d3.forceManyBody())
-//                .force("link", d3.forceLink(links).distance(5).strength(0))
-//                .force("x", d3.forceX())
-//                .force("y", d3.forceY())
-//                .on("tick", ticked);
-//
-//        var canvas = document.querySelector("canvas"),
-//                context = canvas.getContext("2d"),
-//                width = canvas.width,
-//                height = canvas.height;
-//
-//        d3.select(canvas)
-//                .call(d3.drag()
-//                        .container(canvas)
-//                        .subject(dragsubject)
-//                        .on("start", dragstarted)
-//                        .on("drag", dragged)
-//                        .on("end", dragended));
-//
-//        function ticked() {
-//            context.clearRect(0, 0, width, height);
-//            context.save();
-//            context.translate(width / 2, height / 2);
-//
-//            context.beginPath();
-//            links.forEach(drawLink);
-//            context.strokeStyle = "#aaa";
-//            context.stroke();
-//
-//            context.beginPath();
-//            nodes.forEach(drawNode);
-//            context.fill();
-//            context.strokeStyle = "#fff";
-//            context.stroke();
-//
-//            context.restore();
-//        }
-//
-//        function dragsubject() {
-//            return simulation.find(d3.event.x - width / 2, d3.event.y - height / 2);
-//        }
-//
-//        function dragstarted() {
-//            if (!d3.event.active) simulation.alphaTarget(0.3).restart();
-//            d3.event.subject.fx = d3.event.subject.x;
-//            d3.event.subject.fy = d3.event.subject.y;
-//        }
-//
-//        function dragged() {
-//            d3.event.subject.fx = d3.event.x;
-//            d3.event.subject.fy = d3.event.y;
-//        }
-//
-//        function dragended() {
-//            if (!d3.event.active) simulation.alphaTarget(0);
-//            d3.event.subject.fx = null;
-//            d3.event.subject.fy = null;
-//        }
-//
-//        function drawLink(d) {
-//            context.moveTo(d.source.x, d.source.y);
-//            context.lineTo(d.target.x, d.target.y);
-//        }
-//
-//        function drawNode(d) {
-//            context.moveTo(d.x + 3, d.y);
-//            context.arc(d.x, d.y, 3, 0, 2 * Math.PI);
-//        }
-//
-//
-//    })
-
-</script>

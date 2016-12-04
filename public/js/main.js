@@ -9,17 +9,18 @@ requirejs.config({
         "colorbrewer": "../../bower_components/colorbrewer/colorbrewer",
         "d3": "../../bower_components/d3/d3",
         "d3-tip": "../../bower_components/d3-tip/index",
-        "d3-word-cloud": "../../public_html/js/view/mainPanel/wordGraph/d3.layout.cloud"
+        "d3-dsv": "../../bower_components/d3-dsv/index",
+        "node-link": "../../public/js/panel/node-link",
+        "load-data": "../../public/js/data/load-data"
     },
     shim: {
-        "d3-tip":["d3"],
-        "d3-word-cloud":["d3"]
+        //"d3-tip":["d3"],
+        //"d3-word-cloud":["d3"],
+        "d3-dsv":["d3"]
+        //"d3":["d3-dsv"]
     }
 });
 
-require(["d3"],
-    function (d3) {
-        d3.csv("../data/tcpdump.csv",function(d){
-
-        });
-    });
+require(["load-data"], function (loaddata) {
+    loaddata.init("../../")
+});
