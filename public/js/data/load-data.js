@@ -65,9 +65,7 @@ define(["d3", "node-link", "attack-bar-chart"],
         var nodes = [];
         var largestVal = Number.MIN_VALUE;
         var smallestVal = Number.MAX_VALUE;
-        var scale;
 
-        console.log(d3)
         var dsv = d3.dsvFormat(" ");
         d3.text("../data/tcpdump.csv", function (rows) {
 
@@ -122,10 +120,9 @@ define(["d3", "node-link", "attack-bar-chart"],
                 nodes.push({id: nodesmap[key], group: 1});
             }
 
+
             nodeLink.init(nodes, links);
-
             attackBarChart.init();
-
         });
     }
     return LoadData.getInstance();

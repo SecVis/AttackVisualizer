@@ -12,8 +12,8 @@ define(["d3"],function(d3){
 
     var instance = null;
     var svg = d3.select("#attack-bar-chart"),
-        width = +nodeLinkSVG.attr("width"),
-        height = +nodeLinkSVG.attr("height");
+        width = +svg.attr("width"),
+        height = +svg.attr("height");
 
     /**
      * 1. Check if instance is null then throw error
@@ -36,7 +36,7 @@ define(["d3"],function(d3){
     AttackBarChart.getInstance = function () {
         // gets an instance of the singleton. It is better to use
         if (instance === null) {
-            instance = new LoadData();
+            instance = new AttackBarChart();
         }
         return instance;
     };
