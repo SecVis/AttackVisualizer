@@ -1,7 +1,8 @@
 /**
  * Created by sunny on 12/2/16.
  */
-define(["d3","d3-dsv"],function(d3,d3dsv){
+define(["d3", "node-link", "attack-bar-chart"],
+    function (d3, nodeLink, attackBarChart) {
 
     /**
      * This class is responsible for the modifiying the intruments
@@ -37,31 +38,40 @@ define(["d3","d3-dsv"],function(d3,d3dsv){
         return instance;
     };
 
+    /**
+     *
+     * @param a
+     * @param b
+     * @returns {number}
+     */
+    function descending(a, b) {
+        if (a.value < b.value)
+            return 1;
+        if (a.value > b.value)
+            return -1;
+        return 0;
+    }
+
 
     /**
      * load with the initial data
      * @param _callback
      * @param _instance
      */
-    LoadData.prototype.init = function(_files) {
-        //
+    LoadData.prototype.init = function (_files) {
+        var nodesmap = {};
+        var linkVal = {};
+        var links = [];
+        var nodes = [];
+        var largestVal = Number.MIN_VALUE;
+        var smallestVal = Number.MAX_VALUE;
+        var scale;
 
-        var dsv = d3.dsv("|", "text/plain");
-        //console.log(d3.dsv(" "));
-        ////var dsv = d3dsv.dsv(' ');
-        //console.log("check");
-        //
-        //d3.dsv("../data/tcpdump.csv",function(d){
-        //    console.log(d);
-        //})
-        //
-        //d3.text("../data/tcpdump.csv").get(function(error,rows) {
-        dsv("../data/tcpdump.csv", function (data) {
+        console.log(d3)
+        var dsv = d3.dsvFormat(" ");
+        d3.text("../data/tcpdump.csv", function (rows) {
 
-            console.log(data)
-            //if (error) throw error;
-            //var data = dsv(rows);
-
+            var data = dsv.parse(rows);
             data.forEach(function (d) {
                 if (!nodesmap.hasOwnProperty(d.src)) {
                     nodesmap[d.src] = d.src;
@@ -87,14 +97,36 @@ define(["d3","d3-dsv"],function(d3,d3dsv){
                 for (var dest in linkVal[src]) {
                     var val = linkVal[src][dest];
                     links.push({value: val, source: src, target: dest})
+
+                    if (largestVal < val) {
+                        largestVal = val;
+                    }
+                    if (smallestVal > val) {
+                        smallestVal = val;
+                    }
                 }
+            }
+
+            var scale = d3.scaleLinear()
+                    .domain([smallestVal, largestVal])
+                    .range([10, 50]);
+
+            links.sort(descending);
+            for (var index = 0, yIndex = 0; index < links.length; index++) {
+                links[index].height = scale(links[index].value);
+                links[index].yIndex = yIndex;
+                yIndex += links[index].height;
             }
 
             for (var key in nodesmap) {
                 nodes.push({id: nodesmap[key], group: 1});
             }
-        });
 
+            nodeLink.init(nodes, links);
+
+            attackBarChart.init();
+
+        });
     }
     return LoadData.getInstance();
 })

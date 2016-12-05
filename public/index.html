@@ -4,11 +4,43 @@
     <meta charset="UTF-8">
     <title>Darpa IDS Visualization</title>
 </head>
+<style>
+
+    .links line {
+        stroke: #999;
+        stroke-opacity: 0.6;
+    }
+
+    .nodes circle {
+        stroke: #fff;
+        stroke-width: 1.5px;
+    }
+
+    rect{
+        stroke: #999;
+        stroke-opacity: 0.6;
+        fill: lightgrey;
+    }
+
+</style>
 <body>
-<script data-main="../public/js/main" src="../bower_components/requirejs/require.js"></script>
-<div style="width:80%; height: 80%; overflow-y: scroll;">
-    <svg width="2500" height="2500"></svg>
+<div style="width: 100%; overflow: hidden;">
+    <!--<div style="width: 1200px; float: left;">-->
+    <div style="background-color: #7a43b6">
+        <svg id="node-link" width="1200" height="900"></svg>
+    </div>
+    <!--<div style="overflow: scroll ;margin-left: 1200px;">-->
+    <div style="background-color: #269abc">
+        <svg id="rect-diag" width="1200" height="900"></svg>
+    </div>
+    <div style="background-color: #5cb85c">
+        <svg id="attack-bar-chart" width="1200" height="900"></svg>
+    </div>
 </div>
+
+
+<script data-main="../public/js/main" src="../bower_components/requirejs/require.js"></script>
+
 </body>
 </html>
 
