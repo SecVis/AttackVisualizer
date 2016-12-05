@@ -1,8 +1,8 @@
 /**
  * Created by sunny on 12/2/16.
  */
-define(["d3", "node-link", "attack-bar-chart"],
-    function (d3, nodeLink, attackBarChart) {
+define(["d3", "node-link", "attack-bar-chart", "line-chart"],
+    function (d3, nodeLink, attackBarChart, lineChart) {
 
     /**
      * This class is responsible for the modifiying the intruments
@@ -123,6 +123,9 @@ define(["d3", "node-link", "attack-bar-chart"],
 
             nodeLink.init(nodes, links);
             attackBarChart.init();
+
+            var lineChartData = {};
+            lineChart.init(lineChartData);
         });
     }
     return LoadData.getInstance();

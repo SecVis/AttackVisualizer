@@ -10,15 +10,17 @@ define(["d3", "jquery"], function (d3, $) {
      */
 
     var instance = null;
-    var nodeLinkSVG = d3.select("#node-link"),
-        width = +nodeLinkSVG.attr("width"),
-        height = +nodeLinkSVG.attr("height");
+    var svg = d3.select("#node-link"),
+        width = +svg.attr("width"),
+        height = +svg.attr("height");
+
     var simulation = d3.forceSimulation()
         .force("link", d3.forceLink().id(function (d) {
             return d.id;
         }))
         .force("charge", d3.forceManyBody())
         .force("center", d3.forceCenter(width / 2, height / 2));
+
     var color = d3.scaleOrdinal(d3.schemeCategory20);
 
     /**
@@ -48,6 +50,10 @@ define(["d3", "jquery"], function (d3, $) {
         if (!d3.event.active) simulation.alphaTarget(0);
         d.fx = null;
         d.fy = null;
+    }
+
+    function brushed(d){
+        console.log(d)
     }
 
     /**
@@ -99,32 +105,40 @@ define(["d3", "jquery"], function (d3, $) {
     NodeLink.prototype.init = function (nodes, links) {
         var self = this;
 
-        nodeLinkSVG.append("rect").attr("width", width)
-            .attr("height", height)
-            .style("fill", "white")
-            .on("click", function () {
+        //svg.append("rect").attr("width", width)
+        //    .attr("height", height)
+        //    .style("fill", "white")
+        //    .on("click", function () {
+        //
+        //        links = [];
+        //        nodes = [];
+        //
+        //        for (var src in linkVal) {
+        //            for (var dest in linkVal[src]) {
+        //                var val = linkVal[src][dest];
+        //
+        //                links.push({value: val, source: src, target: dest})
+        //            }
+        //        }
+        //
+        //        for (var key in nodesmap) {
+        //            nodes.push({id: nodesmap[key], group: 1});
+        //        }
+        //
+        //        //plot(nodes,links);
+        //        self.plotNodeLink(links);
+        //    });
 
-                links = [];
-                nodes = [];
 
-                for (var src in linkVal) {
-                    for (var dest in linkVal[src]) {
-                        var val = linkVal[src][dest];
 
-                        links.push({value: val, source: src, target: dest})
-                    }
-                }
 
-                for (var key in nodesmap) {
-                    nodes.push({id: nodesmap[key], group: 1});
-                }
 
-                //plot(nodes,links);
-                self.plotNodeLink(links);
-            });
+        self.group = svg.append("g");
 
-        self.group = nodeLinkSVG.append("g");
+
         self.plotNodeLink(nodes, links);
+        //
+
 
     }
 
@@ -135,6 +149,9 @@ define(["d3", "jquery"], function (d3, $) {
      */
     NodeLink.prototype.plotNodeLink = function (nodes, links) {
         var self = this;
+
+        var brush = d3.brush()
+            .on("brush", brushed);
 
         self.group.selectAll("*").remove();
 
@@ -204,6 +221,7 @@ define(["d3", "jquery"], function (d3, $) {
             });
 
 
+
         node.append("title")
             .text(function (d) {
                 return d.id;
@@ -239,6 +257,10 @@ define(["d3", "jquery"], function (d3, $) {
                     return d.y;
                 });
         }
+
+        self.group.append("g")
+            .attr("class", "brush")
+            .call(brush);
     }
     return NodeLink.getInstance();
 });
