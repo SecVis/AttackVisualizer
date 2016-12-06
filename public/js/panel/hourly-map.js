@@ -51,7 +51,57 @@ define(["d3"],function(d3){
     HourlyMap.prototype.init = function (_data) {
         var self = this;
 
-        console.log(_data);
+
+
+
+        var entries = d3.entries(_data);
+        entries.sort(function(a,b){
+            return a.key - b.key;
+        })
+
+        svg.attr("width",entries.length * 45);
+
+
+        var max_value = d3.max(entries,function(d){
+            return d.value;
+        })
+        var min_value = d3.min(entries,function(d){
+            return d.value;
+        })
+
+        var ramp=d3.scaleLinear().domain([min_value,max_value]).range([0.3,1]);
+
+
+        var xIndex = -10;
+        var textXIndex = -10;
+
+        var hour = svg.selectAll(".hour")
+                    .data(entries);
+
+        var hourRect = hour.enter().append("rect").merge(hour);
+        hourRect.exit().remove();
+        hourRect.attr("x",function(){
+                xIndex += 40;
+                return xIndex;
+            })
+            .attr("width",40)
+            .attr("height",30)
+            .style("fill","red")
+            .style("fill-opacity",function(d){
+                return ramp(d.value);
+            });
+
+        var hourText = hour.enter().append("text").merge(hour);
+        hourText.exit().remove();
+        hourText.attr("x",function(){
+                textXIndex += 40;
+                return textXIndex + 10;
+            })
+            .attr("y",20)
+            .text(function(d){
+                return d.key;
+            });
+
     }
 
 
