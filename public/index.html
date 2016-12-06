@@ -1,57 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Darpa IDS Visualization</title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, shrink-to-fit=no, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Simple Sidebar - Start Bootstrap Template</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/simple-sidebar.css" rel="stylesheet">
+
+    <!-- Local CSS -->
+    <link href="css/local.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
 </head>
-<style>
 
-    .links line {
-        stroke: #999;
-        stroke-opacity: 0.6;
-    }
-
-    .nodes circle {
-        stroke: #fff;
-        stroke-width: 1.5px;
-    }
-
-    rect{
-        stroke: #999;
-        stroke-opacity: 0.6;
-        fill: lightgrey;
-    }
-
-    .brush .extent {
-        stroke: gray;
-        fill-opacity: .125;
-        shape-rendering: crispEdges;
-    }
-
-
-</style>
 <body>
-<div style="width: 100%; overflow: hidden;">
-    <!--<div style="width: 1200px; float: left;">-->
-    <div style="background-color: #7a43b6">
-        <svg id="node-link" width="1200" height="900"></svg>
+
+<div id="wrapper">
+
+    <!-- Sidebar -->
+    <div id="sidebar-wrapper">
+        <ul class="sidebar-nav">
+            <li class="sidebar-brand">
+                <a href="#">
+                    Start Bootstrap
+                </a>
+            </li>
+            <li>
+                <a href="#">Dashboard</a>
+            </li>
+            <li>
+                <a href="#">Shortcuts</a>
+            </li>
+            <li>
+                <a href="#">Overview</a>
+            </li>
+            <li>
+                <a href="#">Events</a>
+            </li>
+            <li>
+                <a href="#">About</a>
+            </li>
+            <li>
+                <a href="#">Services</a>
+            </li>
+            <li>
+                <a href="#">Contact</a>
+            </li>
+        </ul>
     </div>
-    <!--<div style="overflow: scroll ;margin-left: 1200px;">-->
-    <div style="background-color: #269abc">
-        <svg id="rect-diag" width="1200" height="900"></svg>
+    <!-- /#sidebar-wrapper -->
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1>Simple Sidebar</h1>
+                    <p>This template has a responsive menu toggling system. The menu will appear collapsed on smaller screens, and will appear non-collapsed on larger screens. When toggled using the button below, the menu will appear/disappear. On small screens, the page content will be pushed off canvas.</p>
+                    <p>Make sure to keep all page content within the <code>#page-content-wrapper</code>.</p>
+                    <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-8" style="overflow: auto; height: 500px;">
+                    <svg id="node-link" width="1500" height="1200"></svg>
+                </div>
+                <div class="col-sm-4" style="overflow: auto;">
+                    <div class="row">
+                        <div class="col-sm-12" style="overflow: auto; height: 500px;">
+                            <svg id="attack-bar-chart" width="1200" height="900"></svg>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <!--<div class="row">-->
+                            <!--<div class="col-sm-12" style="background-color: #ec971f;">-->
+                                <!--<h3>sunny</h3>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <div class="row">
+                            <div class="col-sm-12" style="overflow: auto; height: 300px;">
+                                <svg id="rect-diag" width="300" height="900"></svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12" style="overflow: auto;">
+                    <h3>Column 1</h3>
+                    <svg id="line-chart" width="1200" height="900"></svg>
+                </div>
+            </div>
+        </div>
     </div>
-    <div style="background-color: #5cb85c">
-        <svg id="attack-bar-chart" width="1200" height="900"></svg>
-    </div>
-    <div style="background-color: lightpink">
-        <svg id="line-chart" width="1200" height="900"></svg>
-    </div>
+    <!-- /#page-content-wrapper -->
 
 </div>
+<!-- /#wrapper -->
 
+<!-- jQuery -->
+<script src="../bower_components/jquery/dist/jquery.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+<!-- Menu Toggle Script -->
+<script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+</script>
 
 <script data-main="../public/js/main" src="../bower_components/requirejs/require.js"></script>
 
 </body>
-</html>
 
+</html>

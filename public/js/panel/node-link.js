@@ -52,8 +52,18 @@ define(["d3", "jquery"], function (d3, $) {
         d.fy = null;
     }
 
-    function brushed(d){
-        console.log(d)
+    function brushended(){
+        var selection = d3.event.selection;
+        //console.log(selection)
+        svg.select(".nodes")
+            .selectAll("circle")
+            .each(function(d){
+                if(selection[0][0] <= d.x && d.x <= selection[1][0]
+                    && selection[0][1] <= d.y && d.y <= selection[1][1]) {
+
+                    console.log(d)
+                }
+        })
     }
 
     /**
@@ -129,16 +139,8 @@ define(["d3", "jquery"], function (d3, $) {
         //        self.plotNodeLink(links);
         //    });
 
-
-
-
-
         self.group = svg.append("g");
-
-
         self.plotNodeLink(nodes, links);
-        //
-
 
     }
 
@@ -151,7 +153,9 @@ define(["d3", "jquery"], function (d3, $) {
         var self = this;
 
         var brush = d3.brush()
-            .on("brush", brushed);
+            //.on("brush", brushed);
+            .on("end",brushended)
+
 
         self.group.selectAll("*").remove();
 
@@ -260,6 +264,7 @@ define(["d3", "jquery"], function (d3, $) {
 
         self.group.append("g")
             .attr("class", "brush")
+            .style("fill-opacity","0.125")
             .call(brush);
     }
     return NodeLink.getInstance();

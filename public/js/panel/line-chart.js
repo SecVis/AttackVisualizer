@@ -62,7 +62,6 @@ define(["d3", "jquery"], function (d3, $) {
             var attackTimeList = attackData[attack].timelist;//array
             var attackTotalCount = attackData[attack].totalCount;
 
-
         }
 
     }

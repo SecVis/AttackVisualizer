@@ -1,8 +1,8 @@
 /**
  * Created by sunny on 12/2/16.
  */
-define(["d3", "node-link", "attack-bar-chart", "line-chart"],
-    function (d3, nodeLink, attackBarChart, lineChart) {
+define(["d3", "node-link", "attack-bar-chart", "line-chart", "rect-diag"],
+    function (d3, nodeLink, attackBarChart, lineChart, rectDiag) {
 
     /**
      * This class is responsible for the modifiying the intruments
@@ -113,19 +113,19 @@ define(["d3", "node-link", "attack-bar-chart", "line-chart"],
             for (var index = 0, yIndex = 0; index < links.length; index++) {
                 links[index].height = scale(links[index].value);
                 links[index].yIndex = yIndex;
-                yIndex += links[index].height;
+                yIndex += links[index].height + 3;
             }
 
             for (var key in nodesmap) {
                 nodes.push({id: nodesmap[key], group: 1});
             }
 
-
             nodeLink.init(nodes, links);
-            attackBarChart.init();
-
-            var lineChartData = {};
-            lineChart.init(lineChartData);
+            //attackBarChart.init();
+            rectDiag.init(links)
+            //
+            //var lineChartData = {};
+            //lineChart.init(lineChartData);
         });
     }
     return LoadData.getInstance();

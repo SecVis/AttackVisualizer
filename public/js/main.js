@@ -12,7 +12,8 @@ requirejs.config({
         "d3": "../../bower_components/d3/d3.min",
         "d3-tip": "../../bower_components/d3-tip/index",
         "node-link": "panel/node-link",
-        "load-data": "data/load-data"
+        "load-data": "data/load-data",
+        "rect-diag": "panel/rect-diag"
     },
     shim: {
         //"d3-dsv":["d3"]
