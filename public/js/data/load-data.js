@@ -65,6 +65,11 @@ define(["d3", "node-link", "attack-bar-chart", "line-chart"],
         var nodes = [];
         var largestVal = Number.MIN_VALUE;
         var smallestVal = Number.MAX_VALUE;
+        var attackData = {};
+        var attackNameSet = new Set();
+
+        //added the unknown name in the attack set
+        attackNameSet.add("Unknown")
 
         var dsv = d3.dsvFormat(" ");
         d3.text("../data/tcpdump.csv", function (rows) {
@@ -89,7 +94,81 @@ define(["d3", "node-link", "attack-bar-chart", "line-chart"],
                 }
 
                 linkVal[src][dest]++;
+
+
+                if(!attackData.hasOwnProperty(d.dest)){
+                    attackData[d.dest] = { attacks: {}, totalCount: 0};
+                }
+
+                if(parseInt(d.score) > 0){
+                    if(d.attack != "-"){
+                        var attacks = d.attack.split(",");
+                        attacks.forEach(function(a){
+
+                            //this will keep all the unique attack name
+                            attackNameSet.add(a);
+
+                            //create the attack set if its not preset
+                            if(!attackData[d.dest].attacks.hasOwnProperty(a)){
+                                attackData[d.dest].attacks[a] = {value : 0, name: a}
+                            }
+
+                            //increment the attack count
+                            attackData[d.dest].attacks[a].value += 1;
+                            attackData[d.dest].totalCount += 1;
+                        });
+                    }
+                    else{
+
+                        //create the attack set if its not preset
+                        if(!attackData[d.dest].attacks.hasOwnProperty("Unknown")){
+                            attackData[d.dest].attacks["Unknown"] = {value : 0, name: "Unknown"}
+                        }
+
+                        attackData[d.dest].attacks["Unknown"].value += 1;
+                    }
+                }
             });
+
+            //add all the attacks in the data structure for each
+            //attack to store the value ZERO value for stack bar
+            //chart
+            for(var destIP in attackData){
+                attackNameSet.forEach(function(attackName){
+                    if(!attackData[destIP].attacks.hasOwnProperty(attackName)){
+                        attackData[destIP].attacks[attackName] = {value : 0, name: attackName}
+                    }
+                })
+            }
+
+            var modifiedAttackData = [];
+            var columns = [];
+            var i = 0;
+            for(var destIP in attackData){
+                var attackObj = {};
+                if(i==0) {
+                    columns.push("destinationIP");
+                }
+                attackObj["destinationIP"] = destIP;
+                attackObj["total"] = attackData[destIP].totalCount;
+                for(var attackName in attackData[destIP].attacks){
+                    attackObj[attackName] = attackData[destIP].attacks[attackName].value;
+                    if(i==0) {
+                        columns.push(attackName);
+                    }
+                }
+                if(i == 0) {
+                    columns.push("total");
+                }
+                i++;
+                modifiedAttackData.push(attackObj);
+            }
+
+            modifiedAttackData["columns"] = columns;
+            //console.log(modifiedAttackData);
+
+            //print
+            //console.log(attackData);
 
             for (var src in linkVal) {
                 for (var dest in linkVal[src]) {
@@ -120,9 +199,38 @@ define(["d3", "node-link", "attack-bar-chart", "line-chart"],
                 nodes.push({id: nodesmap[key], group: 1});
             }
 
+            // var attackdata = d3.nest()
+            //     .key(function(d){ return d.dest;})
+            //     .rollup(function(leaves){
+            //         var attack = {};
+            //         var total = 0;
+            //         leaves.forEach(function(d){
+            //             if(d.attack != '-'){
+            //                 var attacks = d.attack.split(",");
+            //                 total += attacks.length;
+            //                 attacks.forEach(function(a){
+            //                     if(attack.hasOwnProperty(a)){
+            //                         attack[a] += 1;
+            //                     }else{
+            //                         attack[a] = 1;
+            //                     }
+            //                 });
+            //             }
+            //         });
+            //         // if(Object.keys(attack).length === 0)
+            //         //     return {"attack":undefined, "total":total};
+            //         return {"attack":attack, "total":total};
+            //     })
+            //     .entries(data);
+
+            // d3.csv("../data/segments_table2.csv", function(error, data) {
+            //     if (error) throw error;
+            //     console.log(data);
+            // })
+
 
             nodeLink.init(nodes, links);
-            attackBarChart.init();
+            attackBarChart.init(modifiedAttackData);
 
             var lineChartData = {};
             lineChart.init(lineChartData);
