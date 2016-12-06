@@ -1,8 +1,8 @@
 /**
  * Created by sunny on 12/2/16.
  */
-define(["d3", "node-link", "attack-bar-chart", "line-chart", "rect-diag"],
-    function (d3, nodeLink, attackBarChart, lineChart, rectDiag) {
+define(["d3", "node-link", "attack-bar-chart", "line-chart", "rect-diag", "hourly-map"],
+    function (d3, nodeLink, attackBarChart, lineChart, rectDiag, hourlyMap) {
 
     /**
      * This class is responsible for the modifiying the intruments
@@ -65,12 +65,20 @@ define(["d3", "node-link", "attack-bar-chart", "line-chart", "rect-diag"],
         var nodes = [];
         var largestVal = Number.MIN_VALUE;
         var smallestVal = Number.MAX_VALUE;
+        var attackData = {};
+        var attackNameSet = new Set();
+        var heatMapHourly = {};
+        var lineChartData = {};
+
+        //added the unknown name in the attack set
+        attackNameSet.add("Unknown")
 
         var dsv = d3.dsvFormat(" ");
         d3.text("../data/tcpdump.csv", function (rows) {
 
             var data = dsv.parse(rows);
             data.forEach(function (d) {
+                console.log(d);
                 if (!nodesmap.hasOwnProperty(d.src)) {
                     nodesmap[d.src] = d.src;
                 }
@@ -89,7 +97,107 @@ define(["d3", "node-link", "attack-bar-chart", "line-chart", "rect-diag"],
                 }
 
                 linkVal[src][dest]++;
+
+
+                if(!attackData.hasOwnProperty(d.dest)){
+                    attackData[d.dest] = { attacks: {}, totalCount: 0};
+                }
+
+                if(parseInt(d.score) > 0){
+
+                    ////////////////////////////////////////////////////////////////////
+                    var hour = d.time.split(":")[0];
+                    if(!heatMapHourly.hasOwnProperty(hour)){
+                        heatMapHourly[hour] = 0;
+                    }
+                    heatMapHourly[hour]++;
+
+                    ////////////////////////////ATTACK DATA and LINE CHART DATA/////////////////////////////
+                    if(d.attack != "-"){
+                        var attacks = d.attack.split(",");
+                        attacks.forEach(function(a){
+
+                            //this will keep all the unique attack name
+                            attackNameSet.add(a);
+
+                            //create the attack set if its not preset
+                            if(!attackData[d.dest].attacks.hasOwnProperty(a)){
+                                attackData[d.dest].attacks[a] = {value : 0, name: a}
+                            }
+
+                            //increment the attack count
+                            attackData[d.dest].attacks[a].value += 1;
+                            attackData[d.dest].totalCount += 1;
+
+
+                            //line chart data
+                            if(!lineChartData.hasOwnProperty(a)){
+                                lineChartData[a] = { timelist: [], totalCount: 0};
+                            }
+
+                            lineChartData[a].timelist.push(d.time);
+                            lineChartData[a].totalCount++;
+                        });
+                    }
+                    else{
+
+                        //create the attack set if its not preset
+                        if(!attackData[d.dest].attacks.hasOwnProperty("Unknown")){
+                            attackData[d.dest].attacks["Unknown"] = {value : 0, name: "Unknown"}
+                        }
+
+                        attackData[d.dest].attacks["Unknown"].value += 1;
+
+
+                        //line chart data
+                        if(!lineChartData.hasOwnProperty("Unknown")){
+                            lineChartData["Unknown"] = { timelist: [], totalCount: 0};
+                        }
+
+                        lineChartData["Unknown"].timelist.push(d.time);
+                        lineChartData["Unknown"].totalCount++;
+                    }
+                }
             });
+
+            ///////////////////////////////// ATTACK DATA  //////////////////////////////////////
+            //add all the attacks in the data structure for each
+            //attack to store the value ZERO value for stack bar
+            //chart
+            for(var destIP in attackData){
+                attackNameSet.forEach(function(attackName){
+                    if(!attackData[destIP].attacks.hasOwnProperty(attackName)){
+                        attackData[destIP].attacks[attackName] = {value : 0, name: attackName}
+                    }
+                })
+            }
+
+            var modifiedAttackData = [];
+            var columns = [];
+            var i = 0;
+            for(var destIP in attackData){
+                var attackObj = {};
+                if(i==0) {
+                    columns.push("destinationIP");
+                }
+                attackObj["destinationIP"] = destIP;
+                attackObj["total"] = attackData[destIP].totalCount;
+                for(var attackName in attackData[destIP].attacks){
+                    attackObj[attackName] = attackData[destIP].attacks[attackName].value;
+                    if(i==0) {
+                        columns.push(attackName);
+                    }
+                }
+                if(i == 0) {
+                    columns.push("total");
+                }
+                i++;
+                modifiedAttackData.push(attackObj);
+            }
+
+            modifiedAttackData["columns"] = columns;
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////
 
             for (var src in linkVal) {
                 for (var dest in linkVal[src]) {
@@ -120,12 +228,12 @@ define(["d3", "node-link", "attack-bar-chart", "line-chart", "rect-diag"],
                 nodes.push({id: nodesmap[key], group: 1});
             }
 
+            //initialze all the data structure
+            hourlyMap.init(heatMapHourly)
             nodeLink.init(nodes, links);
-            //attackBarChart.init();
-            rectDiag.init(links)
-            //
-            //var lineChartData = {};
-            //lineChart.init(lineChartData);
+            rectDiag.init(links);
+            attackBarChart.init(modifiedAttackData);
+            lineChart.init(lineChartData);
         });
     }
     return LoadData.getInstance();

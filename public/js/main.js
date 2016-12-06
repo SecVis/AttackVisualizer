@@ -13,7 +13,9 @@ requirejs.config({
         "d3-tip": "../../bower_components/d3-tip/index",
         "node-link": "panel/node-link",
         "load-data": "data/load-data",
-        "rect-diag": "panel/rect-diag"
+        "rect-diag": "panel/rect-diag",
+        "hourly-map": "panel/hourly-map"
+
     },
     shim: {
         //"d3-dsv":["d3"]
