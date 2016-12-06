@@ -70,6 +70,8 @@ define(["d3", "node-link", "attack-bar-chart", "line-chart", "rect-diag", "hourl
         var heatMapHourly = {};
         var lineChartData = {};
 
+        console.log(_files);
+
         //added the unknown name in the attack set
         attackNameSet.add("Unknown")
 
@@ -78,7 +80,7 @@ define(["d3", "node-link", "attack-bar-chart", "line-chart", "rect-diag", "hourl
 
             var data = dsv.parse(rows);
             data.forEach(function (d) {
-                console.log(d);
+                //console.log(d);
                 if (!nodesmap.hasOwnProperty(d.src)) {
                     nodesmap[d.src] = d.src;
                 }
