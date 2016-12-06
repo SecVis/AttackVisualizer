@@ -81,6 +81,7 @@ define(["d3", "node-link", "attack-bar-chart", "line-chart", "rect-diag", "hourl
             var data = dsv.parse(rows);
             data.forEach(function (d) {
                 //console.log(d);
+
                 if (!nodesmap.hasOwnProperty(d.src)) {
                     nodesmap[d.src] = d.src;
                 }
