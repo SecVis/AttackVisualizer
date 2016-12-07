@@ -70,23 +70,31 @@ define(["d3", "jquery"], function (d3, $) {
 
         //console.log(attackData);
         self.totalAttackCount = d3.keys(attackData).length;
-        svg.attr("height", self.totalAttackCount * attackBlockHeight);
+        svg.attr("height", self.totalAttackCount * (attackBlockHeight+15));
 
         svg.selectAll("g").remove();
 
+        var data = d3.entries(attackData);
+
+        console.log(data);
+
+        data.sort(function(a,b){
+            return d3.descending(a.value["totalCount"],b.value["totalCount"]);
+        });
+
         var i = 0;
-        for(var attack in attackData){
-            var attackName = attack;
-            var attackTimeList = attackData[attack].timelist;
-            attackData[attack].time_count = time_count_arr.slice();
-            var d = attackData[attack];
+        for(var n = 0; n<data.length; n++){
+            var attackName = data[n].key;
+            var attackTimeList = data[n].value.timelist;
+            data[n].value.time_count = time_count_arr.slice();
+            var d = data[n].value;
             for(var j in attackTimeList){
                 var split_time = attackTimeList[j].split(":");
                 var calc_time = parseInt(split_time[0])*100+parseInt(split_time[1]);
                 var ndx = time_count[calc_time];
                 d.time_count[ndx] += 1;
             }
-            var attackTotalCount = attackData[attack].totalCount;
+            var attackTotalCount = data[n].value.totalCount;
 
             //console.log(attackTotalCount);
 
