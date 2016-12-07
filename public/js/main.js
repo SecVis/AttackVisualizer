@@ -18,16 +18,19 @@ requirejs.config({
         "read-menu" : "data/read-menu",
         "allColors": "data/allColors",
         "attack-bar-chart-2": "panel/attack-bar-chart-2",
-        "legend": "panel/attacklegend"
+        "legend": "panel/attacklegend",
+        "tooltip": "data/tooltip"
     },
     shim: {
         //"d3-dsv":["d3"]
-        //"d3":["d3-dsv"]
-        "attack-bar-chart":["allColors"]
+        // "tip":["d3-tip"]
+        //"attack-bar-chart":["allColors"]
     }
 });
 
-require(["load-data","read-menu"], function (loaddata,readMenu) {
+
+require(["load-data","read-menu","tooltip"], function (loaddata,readMenu,tooltip) {
     readMenu.init();
+    tooltip.init();
     loaddata.init("../data/2week/monday/both.llist");
 });

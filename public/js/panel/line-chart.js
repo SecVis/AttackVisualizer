@@ -1,7 +1,7 @@
 /**
  * Created by sunny on 12/2/16.
  */
-define(["d3", "jquery"], function (d3, $) {
+define(["d3", "jquery", "tooltip"], function (d3, $, tooltip) {
 
     /**
      * This class is responsible for the modifiying the intruments
@@ -18,12 +18,14 @@ define(["d3", "jquery"], function (d3, $) {
     var totalAttackCount = 0;
 
     var time_count = {};
+    var rev_time_count = {};
     var time_count_arr = [];
     var k = 0;
 
     for(var i = 0; i<=23; i++){
         for(var j = 0; j<=59;j++){
             time_count[i*100+j] = k;
+            rev_time_count[k] = i*100+j;
             time_count_arr.push(0);
             ++k;
         }
@@ -56,7 +58,23 @@ define(["d3", "jquery"], function (d3, $) {
         return instance;
     };
 
-
+    LineChart.prototype.getTimeFormat = function(value){
+        var text = "";
+        var rem = value%100;
+        var div = parseInt(value/100);
+        if(rem >=0  && rem <=9 ){
+            text += ":0"+rem.toString();
+        }
+        else{
+            text += ":"+rem.toString();
+        }
+        if(div >= 0  && div <= 9){
+            text = "0"+div.toString() + text;
+        }else{
+            text = div.toString() + text;
+        }
+        return text;
+    }
     /**
      *
      * @param nodes
@@ -66,21 +84,29 @@ define(["d3", "jquery"], function (d3, $) {
 
         var self = this;
 
+        var tip = tooltip.getToolTip();
+
+        svg.call(tip);
+
         var attackColor = require("allColors").getAttackColor();
 
         //console.log(attackData);
         self.totalAttackCount = d3.keys(attackData).length;
         svg.attr("height", self.totalAttackCount * (attackBlockHeight+15));
 
+        height = self.totalAttackCount * (attackBlockHeight+15);
+
         svg.selectAll("g").remove();
 
         var data = d3.entries(attackData);
 
-        console.log(data);
+        //console.log(data);
 
         data.sort(function(a,b){
             return d3.descending(a.value["totalCount"],b.value["totalCount"]);
         });
+
+        var x = d3.scaleLinear().domain([0, time_count_arr.length]).range([40, width-40]);
 
         var i = 0;
         for(var n = 0; n<data.length; n++){
@@ -103,8 +129,6 @@ define(["d3", "jquery"], function (d3, $) {
 
             var max = d3.max(d.time_count,function(c){ return c;});
 
-            var x = d3.scaleLinear().domain([0, time_count_arr.length]).range([40, width-40]);
-
             var y = d3.scaleLinear().domain([0, max]).range([attackBlockHeight, 0]);
 
             var line = d3.line()
@@ -122,7 +146,7 @@ define(["d3", "jquery"], function (d3, $) {
                 .attr("d", line(d.time_count))
                 .attr("fill","none")
                 .attr("stroke",attackColor[attackName])
-                .attr("stroke-width","1.5");
+                .attr("stroke-width","2.5");
 
             var yAxisLeft = d3.axisLeft().scale(y).ticks(4);
             // Add the y-axis to the left
@@ -152,7 +176,33 @@ define(["d3", "jquery"], function (d3, $) {
 
         }
 
-        //console.log(attackData);
+        svg.on("mouseover",function() {
+            var coord = d3.mouse(this);
+            if (coord[0] >= 40 && coord[0] <= width - 40) {
+                svg.append("rect").classed("indicator", true).attr("height", height)
+                    .attr("width", 1).attr("fill", "black")
+                    .attr("x", coord[0]);
+
+                tip.offset([coord[1],0]);
+                tip.show(self.getTimeFormat(rev_time_count[x.invert(coord[0]).toFixed(0)]));
+            }
+        })
+            .on("mousemove",function(){
+                var coord = d3.mouse(this);
+                if (coord[0] >= 40 && coord[0] <= width - 40) {
+                    svg.select(".indicator")
+                        .attr("x", coord[0]);
+                    tip.offset([coord[1],0]);
+                    tip.show(self.getTimeFormat(rev_time_count[x.invert(coord[0]).toFixed(0)]));
+                }else{
+                    svg.select(".indicator").remove();
+                    tip.hide();
+                }
+            })
+            .on("mouseout",function(){
+                svg.select(".indicator").remove();
+                tip.hide();
+            });
 
     }
 
