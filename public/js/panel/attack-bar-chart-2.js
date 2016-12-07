@@ -1,7 +1,7 @@
 /**
  * Created by sunny on 12/6/16.
  */
-define(["d3"],function(d3){
+define(["d3","tooltip"],function(d3, tooltip){
 
 
     /**
@@ -15,7 +15,13 @@ define(["d3"],function(d3){
         width = +svg.attr("width"),
         height = +svg.attr("height");
 
+    var zsvg = d3.select("#attack-bar-chart-zoom"),
+        zwidth = +svg.attr("width"),
+        zheight = +svg.attr("height");
+
     var dispatch;
+
+
 
 
     /**
@@ -48,9 +54,39 @@ define(["d3"],function(d3){
      *
      * @param _data
      */
+    AttackBarChart2.prototype.zoom = function (d, ip) {
+
+        zsvg.append("text").attr("y",225).style("font-size","30px").style("stroke","black").text(ip);
+        var attack = zsvg.selectAll("rect").data(function(){
+            return d3.entries(d.attacks);
+        })
+        attack.exit().remove();
+        attack = attack.enter().append("rect").merge(attack);
+        attack.attr("y",250)
+            .attr("x",function(d){
+                return d.value.x;
+            })
+            .attr("width",function(d){
+                return d.value.width;
+            })
+            .attr("height",50)
+            .style("fill",function(d){
+                return d.value.color;
+            })
+    }
+
+
+
+    /**
+     *
+     * @param _data
+     */
     AttackBarChart2.prototype.reload = function (_data) {
         var self = this;
 
+        var tip = tooltip.getToolTip();
+        console.log(tip)
+        svg.call(tip);
 
         var colorMap = require("allColors").getAttackColor();
         for(var ip in _data){
@@ -75,26 +111,6 @@ define(["d3"],function(d3){
             return d3.descending(a.value.totalCount,b.value.totalCount);
         });
 
-        //console.log(entries);
-        //for(var index = 0; index < entries.length ; index++){
-        //    var scale = d3.scaleLinear().domain([0,entries[index].value.totalCount]).range([0,width]);
-        //
-        //    entries[index].value.attacks = d3.entries(entries[index].value.attacks);
-        //    console.log( entries[index].value.attacks)
-        //    entries[index].value.attacks.sort(function(a,b){
-        //        return d3.ascending(a.value.key, b.value.key);
-        //    })
-        //
-        //    var xLoc = 0;
-        //    for (var aIndex = 0 ; aIndex < entries[index].value.attacks.length ; aIndex++){
-        //        entries[index].value.attacks[aIndex].x = xLoc;
-        //        entries[index].value.attacks[aIndex].width = scale(entries[index].value.attacks[aIndex].value.value)
-        //        entries[index].value.attacks[aIndex].color = colorMap[entries[index].value.attacks[aIndex].key];
-        //        entries[index].value.attacks[aIndex].id = entries[index].key;
-        //        xLoc += entries[index].value.attacks[aIndex].width
-        //    }
-        //}
-
 
         var group = svg.selectAll("g").data(entries);
         group.exit().remove();
@@ -116,16 +132,24 @@ define(["d3"],function(d3){
             return d.value.width;
         })
         .attr("height",1)
+        .style("cursor","zoom-in")
         .style("fill",function(d){
             return d.value.color;
         })
         .on("click",function(d){
             dispatch.call("attackBarChartClickCallBack",{},d);
         })
+        .on("mouseover",function(d){
+            self.zoom(_data[d.value.id], d.value.id);
+            console.log(d.value)
+            var message = "<strong>Attack - "+ d.key+" :</strong> <span style='color:red'>" + d.value.value + "</span>"
+            tip.show(message);
+        })
+        .on("mouseout",function(d){
+            zsvg.selectAll("*").remove();
+        })
 
         svg.attr("height",entries.length*1);
-
-
 
     }
 
