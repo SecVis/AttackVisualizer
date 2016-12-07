@@ -12,7 +12,7 @@ define(["d3"],function(d3){
 
     var instance = null;
     var svg = d3.select("#hourly-map"),
-        width = +svg.attr("width"),
+        width = +svg.node().parentNode.getBoundingClientRect().width,
         height = +svg.attr("height");
 
     /**
@@ -52,14 +52,15 @@ define(["d3"],function(d3){
         var self = this;
 
 
-
+        //console.log(svg.node().parentNode.getBoundingClientRect());
 
         var entries = d3.entries(_data);
+
         entries.sort(function(a,b){
             return a.key - b.key;
         })
 
-        svg.attr("width",entries.length * 45);
+        svg.attr("width",width);
 
 
         var max_value = d3.max(entries,function(d){
@@ -81,11 +82,12 @@ define(["d3"],function(d3){
         var hourRect = hour.enter().append("rect").merge(hour);
         hourRect.exit().remove();
         hourRect.attr("x",function(){
-                xIndex += 40;
+                xIndex += (width/entries.length)-10;
                 return xIndex;
             })
-            .attr("width",40)
+            .attr("width",(width/entries.length)-10)
             .attr("height",30)
+            //.attr("stroke","black")
             .style("fill","red")
             .style("fill-opacity",function(d){
                 return ramp(d.value);
@@ -94,8 +96,8 @@ define(["d3"],function(d3){
         var hourText = hour.enter().append("text").merge(hour);
         hourText.exit().remove();
         hourText.attr("x",function(){
-                textXIndex += 40;
-                return textXIndex + 10;
+                textXIndex += (width/entries.length)-10;
+                return textXIndex + 20;
             })
             .attr("y",20)
             .text(function(d){
