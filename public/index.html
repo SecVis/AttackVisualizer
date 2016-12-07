@@ -19,6 +19,7 @@
 
     <!-- Local CSS -->
     <link href="css/local.css" rel="stylesheet">
+    <link href="css/navbar-style.css" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -105,26 +106,52 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-md-12">
                     <svg id="hourly-map" height="100"></svg>
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-12">
-                    <svg id="node-link" width="1500" height="1200"></svg>
+                <!--Carousel start-->
+                <div id="carousel-example-generic" class="carousel slide" data-ride="carousel" data-interval=360000>
+                    <!-- Indicators -->
+                    <!-- Wrapper for slides -->
+                    <div class="carousel-inner">
+                        <div class="item active">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <svg id="node-link" width="1500" height="1200"></svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <!--<svg id="rect-diag" width="750" height="500"></svg>-->
+                                    <svg id="rect-diag" width="1000" height="1200"></svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Controls -->
+                    <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                        <span class="glyphicon glyphicon-chevron-left"></span>
+                    </a>
+                    <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                    </a>
                 </div>
             </div>
             <div class="row">
                 <div class="col-lg-6">
                     <svg id="attack-bar-chart" width="750" height="500"></svg>
                 </div>
-                <div class="col-lg-6">
+                <!--<div class="col-lg-6">-->
+                    <!--&lt;!&ndash;<svg id="rect-diag" width="750" height="500"></svg>&ndash;&gt;-->
                     <!--<svg id="rect-diag" width="750" height="500"></svg>-->
-                    <svg id="rect-diag" width="750" height="500"></svg>
-                </div>
+                <!--</div>-->
             </div>
             <div class="row">
-                <div class="col-lg-6" style="overflow:scroll; height:400px; width:1600px">
+                <div class="col-md-12" style="overflow:scroll; height:400px; width:1600px">
                     <svg id="line-chart" width="1500" height="900"></svg>
                 </div>
             </div>

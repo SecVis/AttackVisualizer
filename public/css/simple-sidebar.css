@@ -9,6 +9,17 @@
  }
 
 /* Toggle Styles */
+.row {
+    margin-left: -20px;
+    margin-right: -20px;
+}
+.row:before, .row:after {
+    content: " ";
+    display: table;
+}
+.row:after {
+    clear: both;
+}
 
 #wrapper {
     padding-left: 0;

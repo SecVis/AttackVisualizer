@@ -24,6 +24,13 @@
     stroke-width: 0.7;
 }
 
+.svg-content{
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
 .d3-tip {
     line-height: 1;
     font-weight: bold;
@@ -51,4 +58,8 @@
     margin: -1px 0 0 0;
     top: 100%;
     left: 0;
+}
+
+div{
+    padding-bottom: 50px;
 }
