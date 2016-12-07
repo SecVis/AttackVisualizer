@@ -85,7 +85,6 @@ define(["d3","tooltip"],function(d3, tooltip){
         var self = this;
 
         var tip = tooltip.getToolTip();
-        console.log(tip)
         svg.call(tip);
 
         var colorMap = require("allColors").getAttackColor();
@@ -132,7 +131,7 @@ define(["d3","tooltip"],function(d3, tooltip){
             return d.value.width;
         })
         .attr("height",1)
-        .style("cursor","zoom-in")
+        //.style("cursor","zoom-in")
         .style("fill",function(d){
             return d.value.color;
         })
@@ -141,12 +140,12 @@ define(["d3","tooltip"],function(d3, tooltip){
         })
         .on("mouseover",function(d){
             self.zoom(_data[d.value.id], d.value.id);
-            console.log(d.value)
             var message = "<strong>Attack - "+ d.key+" :</strong> <span style='color:red'>" + d.value.value + "</span>"
             tip.show(message);
         })
         .on("mouseout",function(d){
             zsvg.selectAll("*").remove();
+            tip.hide();
         })
 
         svg.attr("height",entries.length*1);

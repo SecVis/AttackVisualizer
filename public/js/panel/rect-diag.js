@@ -131,6 +131,8 @@ define(["d3"],function(d3){
                 return d.r;
             })
             .on("click",function(d){
+                svg.selectAll("circle").style("fill","lightgrey");
+                d3.select(this).style("fill","green");
                 self.dispatch.call("rectDiagCallBack",{}, d.data.link);
             });
 

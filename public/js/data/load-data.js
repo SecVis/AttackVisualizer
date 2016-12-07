@@ -144,7 +144,16 @@ define(["d3", "node-link", "line-chart", "rect-diag", "hourly-map", "allColors",
          * @param _callback
          * @param _instance
          */
-        LoadData.prototype.init = function (_files) {
+        LoadData.prototype.init = function (file) {
+
+            nodesmap = {};
+            linkVal = {};
+            links = [];
+            nodes = [];
+            attackData = {};
+            attackNameSet = new Set();
+            heatMapHourly = {};
+            lineChartData = {};
 
 
             var largestVal = Number.MIN_VALUE;
@@ -154,7 +163,7 @@ define(["d3", "node-link", "line-chart", "rect-diag", "hourly-map", "allColors",
             attackNameSet.add("Unknown")
 
             var dsv = d3.dsvFormat(" ");
-            d3.text("../data/tcpdump.csv", function (rows) {
+            d3.text(file, function (rows) {
 
                 var data = dsv.parse(rows);
                 data.forEach(function (d) {

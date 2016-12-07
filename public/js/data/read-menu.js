@@ -53,11 +53,11 @@ define(["d3","load-data"],function(d3,loaddata){
            var filepath = "../data/2week/"
            if(this.id >= 11 && this.id<=15) {
                var folder = day[(this.id%10)-1];
-               filepath += folder+"/both.llist";
+               filepath += folder+"/both.lllist";
                loaddata.init(filepath);
            }else if(this.id >= 21 && this.id <= 25){
                var folder = day[(this.id%10)-1];
-               filepath += folder+"/both.llist";
+               filepath += folder+"/both.lllist";
                loaddata.init(filepath);
            }else{
 

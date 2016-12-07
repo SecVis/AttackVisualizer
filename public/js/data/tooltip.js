@@ -47,7 +47,7 @@ define(["d3", "d3-tip"], function (d3, d3Tip) {
         var self = this;
 
         self.tip = d3Tip().attr('class', 'd3-tip')
-            .offset([-10, 0])
+            .offset([-20, 0])
             .html(function(d) {
 
                 return d ;

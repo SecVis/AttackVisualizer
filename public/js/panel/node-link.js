@@ -144,6 +144,7 @@ define(["d3", "jquery"], function (d3, $) {
         //        self.plotNodeLink(links);
         //    });
 
+        svg.selectAll("*").remove();
         self.group = svg.append("g");
         self.plotNodeLink(nodes, links);
 
@@ -185,6 +186,7 @@ define(["d3", "jquery"], function (d3, $) {
      * @param data
      */
     function attackBarChartClickCallBack(d){
+
         svg.selectAll("circle")
             .style("fill",function(c){
                 if(c.id === d.value.id){

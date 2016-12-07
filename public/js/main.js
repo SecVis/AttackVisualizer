@@ -32,5 +32,5 @@ requirejs.config({
 require(["load-data","read-menu","tooltip"], function (loaddata,readMenu,tooltip) {
     readMenu.init();
     tooltip.init();
-    loaddata.init("../data/2week/monday/both.llist");
+    loaddata.init("../data/tcpdump.csv");
 });
