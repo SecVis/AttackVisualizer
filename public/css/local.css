@@ -18,10 +18,11 @@
 }
 
 
-.rect-diag-link{
+.rect-diag-link {
     fill: white;
     stroke: black;
     stroke-width: 0.7;
+}
 
 .d3-tip {
     line-height: 1;
