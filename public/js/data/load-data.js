@@ -1,8 +1,8 @@
 /**
  * Created by sunny on 12/2/16.
  */
-define(["d3", "node-link", "attack-bar-chart", "line-chart", "rect-diag", "hourly-map"],
-    function (d3, nodeLink, attackBarChart, lineChart, rectDiag, hourlyMap) {
+define(["d3", "node-link", "attack-bar-chart", "line-chart", "rect-diag", "hourly-map", "allColors"],
+    function (d3, nodeLink, attackBarChart, lineChart, rectDiag, hourlyMap,  allColors) {
 
         /**
          * This class is responsible for the modifiying the intruments
@@ -363,12 +363,16 @@ define(["d3", "node-link", "attack-bar-chart", "line-chart", "rect-diag", "hourl
                     nodes.push({id: nodesmap[key], group: 1});
                 }
 
+                allColors.init(nodesmap, linkVal, attackNameSet);
+
+
                 //initialze all the data structure
                 hourlyMap.init(heatMapHourly, dispatch)
                 nodeLink.init(nodes, links, dispatch);
                 rectDiag.init(links, dispatch);
                 attackBarChart.init(modifiedAttackData, dispatch);
                 lineChart.init(lineChartData, dispatch);
+
             });
         }
         return LoadData.getInstance();

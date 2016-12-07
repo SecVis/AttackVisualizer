@@ -18,6 +18,7 @@ define(["d3"],function(d3){
     var stackedbarchart = svg.append("g");//.attr("transform", "translate(" + 10 + "," + 10 + ")");;
     var stack = d3.stack();
 
+
     /**
      * 1. Check if instance is null then throw error
      * 2. Calls the load ui related to this class
@@ -50,6 +51,8 @@ define(["d3"],function(d3){
      */
     AttackBarChart.prototype.reload = function (_data) {
         var self = this;
+
+
 
         _data.sort(function(a, b) { return b.total - a.total; });
 
@@ -127,6 +130,9 @@ define(["d3"],function(d3){
     AttackBarChart.prototype.init = function (_data, _dispatch) {
         var self = this;
 
+        var attackColor = require("allColors").getAttackColor();
+
+
         _data.sort(function(a, b) { return b.total - a.total; });
 
         height = 15*_data.length;
@@ -155,7 +161,7 @@ define(["d3"],function(d3){
 
 
         stackedbargroup.attr("fill", function(d) {
-            return z(d.key);
+            return attackColor[d.key];
         });
 
 
@@ -172,13 +178,19 @@ define(["d3"],function(d3){
         stackedbar.exit().remove();
 
 
-        stackedbar = stackedbar.enter().append("rect").merge(stackedbar);
+        stackedbar = stackedbar.enter().append("rect")
+                        .merge(stackedbar);
+
+
+
 
         //console.log(stackedbar);
         stackedbar.attr("x",function(d) {d._x = x(d[0]); return x(d[0]); })
             .attr("y", function(d,i){ return i*(35+5);})
             .attr("height",35)
             .attr("width", function(d) { return x(d[1]) - x(d[0]); })
+
+
             //.on("mouseover",function(d){
             //    svg.selectAll("rect")
             //        .style("visibility",function(r){

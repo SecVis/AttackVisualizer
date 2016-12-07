@@ -15,11 +15,14 @@ requirejs.config({
         "load-data": "data/load-data",
         "rect-diag": "panel/rect-diag",
         "hourly-map": "panel/hourly-map",
-        "read-menu" : "data/read-menu"
+        "read-menu" : "data/read-menu",
+        "randomColor": "../../bower_components/randomcolor/randomColor",
+        "allColors": "data/allColors"
     },
     shim: {
         //"d3-dsv":["d3"]
         //"d3":["d3-dsv"]
+        "attack-bar-chart":["allColors"]
     }
 });
 

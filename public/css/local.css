@@ -6,11 +6,11 @@
     stroke: #fff;
     stroke-width: 1.5px;
 }
-rect{
-    stroke: #999;
-    stroke-opacity: 0.6;
-    fill: lightgrey;
-}
+/*rect{*/
+    /*stroke: #999;*/
+    /*stroke-opacity: 0.6;*/
+    /*fill: lightgrey;*/
+/*}*/
 .brush .extent {
     stroke: gray;
     fill-opacity: .125;
