@@ -73,7 +73,7 @@ define(["d3", "jquery"], function (d3, $) {
         legendgroup = legendgroup.enter().append("g").merge(legendgroup);
 
         legendgroup.attr("transform",function(d,i){
-            return "translate(0,"+(i*(30+10))+")";
+            return "translate(20,"+(i*(30+10))+")";
         })
 
         legendgroup.append("rect")
