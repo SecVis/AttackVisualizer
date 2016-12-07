@@ -17,7 +17,8 @@ requirejs.config({
         "hourly-map": "panel/hourly-map",
         "read-menu" : "data/read-menu",
         "randomColor": "../../bower_components/randomcolor/randomColor",
-        "allColors": "data/allColors"
+        "allColors": "data/allColors",
+        "attack-bar-chart-2": "panel/attack-bar-chart-2"
     },
     shim: {
         //"d3-dsv":["d3"]
