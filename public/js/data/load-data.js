@@ -1,8 +1,9 @@
 /**
  * Created by sunny on 12/2/16.
  */
-define(["d3", "node-link", "attack-bar-chart", "line-chart", "rect-diag", "hourly-map", "allColors","attack-bar-chart-2"],
-    function (d3, nodeLink, attackBarChart, lineChart, rectDiag, hourlyMap,  allColors, attackBarChart2) {
+
+define(["d3", "node-link", "line-chart", "rect-diag", "hourly-map", "allColors","legend","attack-bar-chart-2"],
+    function (d3, nodeLink, lineChart, rectDiag, hourlyMap,  allColors, legend, attackBarChart2) {
 
         /**
          * This class is responsible for the modifiying the intruments
@@ -20,7 +21,8 @@ define(["d3", "node-link", "attack-bar-chart", "line-chart", "rect-diag", "hourl
         var heatMapHourly = {};
         var lineChartData = {};
         var dispatch = d3.dispatch("nodeLinkCallBack", "hourlyMapCallBack",
-            "rectDiagCallBack", "attackBarChartCallBack", "lineChartCallBack");
+            "rectDiagCallBack", "attackBarChartClickCallBack",
+            "lineChartCallBack");
 
         //added the unknown name in the attack set
         attackNameSet.add("Unknown")
@@ -76,11 +78,11 @@ define(["d3", "node-link", "attack-bar-chart", "line-chart", "rect-diag", "hourl
 
             var largestVal = Number.MIN_VALUE;
             var smallestVal = Number.MAX_VALUE;
+            var selectedLinks = [];
 
             if(selectedNodes.length > 0) {
 
                 var sourceNodeMap = {};
-                var targetIDs = {};
                 selectedNodes.forEach(function (d) {
                     if (!sourceNodeMap.hasOwnProperty(d.id)) {
                         sourceNodeMap[d.id] = {};
@@ -92,75 +94,28 @@ define(["d3", "node-link", "attack-bar-chart", "line-chart", "rect-diag", "hourl
                     if (sourceNodeMap.hasOwnProperty(link.source.id)
                         || sourceNodeMap.hasOwnProperty(link.target.id) ) {
 
-                        //var val = linkVal[link.source.id][link.target.id];
-                        //selectedLinks.push({value: val, source: link.source.id, target: link.target.id});
-
-                        if (!targetIDs.hasOwnProperty(link.target.id)) {
-                            targetIDs[link.target.id] = {};
+                        if (largestVal < link.value) {
+                            largestVal = link.value;
                         }
+                        if (smallestVal > link.value) {
+                            smallestVal = link.value;
+                        }
+
+                        selectedLinks.push(link);
                     }
                 });
 
-                var selNodes = [];
-                var selectedLinks = [];
-                for (var source in sourceNodeMap) {
-                    selNodes.push({id: nodesmap[source], group: 5});
-
-                    for(var target in linkVal[source]){
-                        var value = linkVal[source][target]
-                        selectedLinks.push({value: value, source: source, target: target})
-
-                        selNodes.push({id: nodesmap[target], group: 5});
+                //////////////////////////////////////ATTACK MAP DATA/////////////////////////
 
 
-                        if (largestVal < value) {
-                            largestVal = value;
-                        }
-                        if (smallestVal > value) {
-                            smallestVal = value;
-                        }
+                var newAttackData = {};
+                for(var attackIP in attackData){
+                    if(sourceNodeMap.hasOwnProperty(attackIP)){
+                        newAttackData[attackIP] = attackData[attackIP];
                     }
                 }
 
-
-
-
-
-                nodeLink.reload(selNodes, selectedLinks);
-
-
-                //////////////////////////////////////ATTCK MAP DATA/////////////////////////
-
-                var modifiedAttackData = [];
-                var columns = [];
-                var i = 0;
-                for(var destIP in attackData){
-
-                    if(sourceNodeMap.hasOwnProperty(destIP) || targetIDs.hasOwnProperty(destIP)) {
-
-                            var attackObj = {};
-                            if (i == 0) {
-                                columns.push("destinationIP");
-                            }
-                            attackObj["destinationIP"] = destIP;
-                            attackObj["total"] = attackData[destIP].totalCount;
-                            for (var attackName in attackData[destIP].attacks) {
-                                attackObj[attackName] = attackData[destIP].attacks[attackName].value;
-                                if (i == 0) {
-                                    columns.push(attackName);
-                                }
-                            }
-                            if (i == 0) {
-                                columns.push("total");
-                            }
-                            i++;
-                            modifiedAttackData.push(attackObj);
-                    }
-                }
-
-                modifiedAttackData["columns"] = columns;
-
-                attackBarChart.reload(modifiedAttackData);
+                attackBarChart2.reload(newAttackData);
 
                 ///////////////////////////////////////////RECT DIAG///////////////////////////////
 
@@ -179,24 +134,10 @@ define(["d3", "node-link", "attack-bar-chart", "line-chart", "rect-diag", "hourl
 
                 ///////////////////////////////////////////////////////////////////////////////////
             }
-            else{
-                nodes =[];
-                links =[];
-                for (var src in linkVal) {
-                    for (var dest in linkVal[src]) {
-                        var val = linkVal[src][dest];
-                        links.push({value: val, source: src, target: dest})
-                    }
-                }
-
-                for (var key in nodesmap) {
-                    nodes.push({id: nodesmap[key], group: 1});
-                    links.push({value: val, source: src, target: dest})
-                }
-                nodeLink.reload(nodes, links);
-            }
         }
         dispatch.on("nodeLinkCallBack",nodeLinkCallBack);
+
+
 
         /**
          * load with the initial data
@@ -235,9 +176,6 @@ define(["d3", "node-link", "attack-bar-chart", "line-chart", "rect-diag", "hourl
                     }
 
                     linkVal[src][dest]++;
-
-
-
 
                     if(parseInt(d.score) > 0){
 
@@ -344,11 +282,11 @@ define(["d3", "node-link", "attack-bar-chart", "line-chart", "rect-diag", "hourl
                 }
 
                 allColors.init(nodesmap, linkVal, attackNameSet);
-
+                legend.init();
 
                 //initialze all the data structure
-                hourlyMap.init(heatMapHourly, dispatch)
-                nodeLink.init(nodes, links, dispatch);
+                hourlyMap.init(heatMapHourly, dispatch);
+                nodeLink.init(nodes, links, attackData, dispatch);
                 rectDiag.init(links, dispatch);
                 attackBarChart2.init(attackData, dispatch);
                 lineChart.init(lineChartData, dispatch);

@@ -11,19 +11,20 @@ define(["d3"],function(d3){
      */
 
     var instance = null;
-    //var svg = d3.select("#rect-diag"),
-    //    width = +svg.attr("width"),
-    //    height = +svg.attr("height");
+    var svg = d3.select("#rect-diag"),
+        width = +svg.attr("width"),
+        height = +svg.attr("height");
 
 
 
 
 
-    var canvas = document.querySelector("canvas"),
-        context = canvas.getContext("2d"),
-        width = canvas.width,
-        height = canvas.height,
-        tau = 2 * Math.PI;
+    //var canvas = document.querySelector("canvas"),
+    //    context = canvas.getContext("2d"),
+    //    width = canvas.width,
+    //    height = canvas.height,
+    //    tau = 2 * Math.PI;
+    var dispatch;
 
     var bar_width = 250;
 
@@ -57,66 +58,26 @@ define(["d3"],function(d3){
      *
      * @param _data
      */
-    RectDiag.prototype.init = function (links) {
+    RectDiag.prototype.init = function (links, dispatch) {
 
+        var self = this;
 
-        d3.select("canvas").selectAll("*").remove();
-
-        var largestVal = Number.MIN_VALUE;
-        var smallestVal = Number.MAX_VALUE;
-
-        for(var index = 0; index < links.length ; index++){
-            if(largestVal < links[index].value){
-                largestVal = links[index].value
-            }
-            if(smallestVal > links[index].value){
-                smallestVal = links[index].value
-            }
-        }
-
-        var scale = d3.scaleLinear()
-            .domain([smallestVal, largestVal])
-            .range([3, 50]);
-
-
-        var nodes = [];
-        for( var index = 0 ; index < links.length ; index++ ){
-            nodes.push({r: scale(links[index].value)});
-        }
-
-        console.log(nodes)
-
-        var simulation = d3.forceSimulation(nodes)
-            .velocityDecay(0.2)
-            .force("x", d3.forceX().strength(0.002))
-            .force("y", d3.forceY().strength(0.002))
-            .force("collide", d3.forceCollide().radius(function(d) { return d.r + 0.5; }).iterations(2))
-            .on("tick", ticked);
-
-
-        function ticked() {
-            context.clearRect(0, 0, width, height);
-            context.save();
-            context.translate(width / 2, height / 2);
-
-            context.beginPath();
-            nodes.forEach(function(d) {
-                context.moveTo(d.x + d.r, d.y);
-                context.arc(d.x, d.y, d.r, 0, tau);
-            });
-            context.fillStyle = "#ddd";
-            context.fill();
-            context.strokeStyle = "#333";
-            context.stroke();
-
-            context.restore();
-        }
+        self.dispatch = dispatch;
+        console.log(dispatch)
+        self.reload(links);
 
     }
 
     RectDiag.prototype.reload = function (links) {
 
-        d3.select("canvas").selectAll("*").remove();
+        var self = this;
+
+        d3.select("#rect-diag").selectAll("*").remove();
+
+
+        var dataset = {
+            "children": []
+        };
 
         var largestVal = Number.MIN_VALUE;
         var smallestVal = Number.MAX_VALUE;
@@ -135,36 +96,48 @@ define(["d3"],function(d3){
             .range([3, 50]);
 
 
-        var nodes = [];
         for( var index = 0 ; index < links.length ; index++ ){
-            nodes.push({r: scale(links[index].value)});
-        }
-
-        var simulation = d3.forceSimulation(nodes)
-            .velocityDecay(0.2)
-            .force("x", d3.forceX().strength(0.002))
-            .force("y", d3.forceY().strength(0.002))
-            .force("collide", d3.forceCollide().radius(function(d) { return d.r + 0.5; }).iterations(2))
-            .on("tick", ticked);
-
-
-        function ticked() {
-            context.clearRect(0, 0, width, height);
-            context.save();
-            context.translate(width / 2, height / 2);
-
-            context.beginPath();
-            nodes.forEach(function(d) {
-                context.moveTo(d.x + d.r, d.y);
-                context.arc(d.x, d.y, d.r, 0, tau);
+            dataset.children.push({
+                "link":links[index],
+                "responseCount": scale(links[index].value)
             });
-            context.fillStyle = "#ddd";
-            context.fill();
-            context.strokeStyle = "#333";
-            context.stroke();
-
-            context.restore();
         }
+
+        //var diameter = 600;
+        var color = d3.scaleOrdinal(d3.schemeCategory20);
+        var bubble = d3.pack(dataset)
+            .size([svg.attr("width"), svg.attr("height")])
+            .padding(1.5);
+        svg.attr("class", "bubble");
+
+        var nodes = d3.hierarchy(dataset)
+            .sum(function(d) { return d.responseCount; });
+
+        var node = svg.selectAll(".node")
+            .data(bubble(nodes).descendants())
+            .enter()
+            .filter(function(d){
+                return  !d.children
+            })
+            .append("g")
+            .attr("class", "node")
+            .attr("transform", function(d) {
+                return "translate(" + d.x + "," + d.y + ")";
+            });
+        //
+        node.append("circle")
+            .classed("rect-diag-link",true)
+            .attr("r", function(d) {
+                return d.r;
+            })
+            .on("click",function(d){
+                self.dispatch.call("rectDiagCallBack",{}, d.data.link);
+            });
+
+
+        d3.select(self.frameElement)
+            .style("height", svg.attr("height") + "px");
+
     }
 
 

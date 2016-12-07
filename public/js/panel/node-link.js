@@ -54,11 +54,8 @@ define(["d3", "jquery"], function (d3, $) {
 
     function brushended(){
 
-        console.log("brus")
-
         var arr = [];
         var selection = d3.event.selection;
-        //console.log(selection)
         svg.select(".nodes")
             .selectAll("circle")
             .each(function(d){
@@ -119,9 +116,10 @@ define(["d3", "jquery"], function (d3, $) {
      * @param nodes
      * @param links
      */
-    NodeLink.prototype.init = function (nodes, links, _dispatch) {
+    NodeLink.prototype.init = function (nodes, links, attackIPToDataMap, _dispatch) {
         var self = this;
 
+        self.attackIPToDataMap = attackIPToDataMap;
         //svg.append("rect").attr("width", width)
         //    .attr("height", height)
         //    .style("fill", "white")
@@ -150,7 +148,8 @@ define(["d3", "jquery"], function (d3, $) {
         self.plotNodeLink(nodes, links);
 
         dispatch = _dispatch;
-
+        dispatch.on("attackBarChartClickCallBack",attackBarChartClickCallBack);
+        dispatch.on("rectDiagCallBack",rectDiagCallBack);
     }
 
     /**
@@ -161,36 +160,45 @@ define(["d3", "jquery"], function (d3, $) {
     NodeLink.prototype.reload = function (nodes, links) {
         var self = this;
 
-        //svg.append("rect").attr("width", width)
-        //    .attr("height", height)
-        //    .style("fill", "white")
-        //    .on("click", function () {
-        //
-        //        links = [];
-        //        nodes = [];
-        //
-        //        for (var src in linkVal) {
-        //            for (var dest in linkVal[src]) {
-        //                var val = linkVal[src][dest];
-        //
-        //                links.push({value: val, source: src, target: dest})
-        //            }
-        //        }
-        //
-        //        for (var key in nodesmap) {
-        //            nodes.push({id: nodesmap[key], group: 1});
-        //        }
-        //
-        //        //plot(nodes,links);
-        //        self.plotNodeLink(links);
-        //    });
-
         self.plotNodeLink(nodes, links);
     }
 
     var brush = d3.brush()
-        //.on("brush", brushed);
         .on("end",brushended)
+
+
+    /**
+     *
+     * @param d
+     */
+    function rectDiagCallBack(d){
+        svg.selectAll("line")
+            .style("stroke",function(l){
+                if(l.source.id === d.source.id && l.target.id == d.target.id){
+                    return "green"
+                }
+            })
+    }
+
+    /**
+     *
+     * @param data
+     */
+    function attackBarChartClickCallBack(d){
+        svg.selectAll("circle")
+            .style("fill",function(c){
+                if(c.id === d.value.id){
+                    return "yellow"
+                }
+            })
+            .attr("r",function(c){
+                if(c.id === d.value.id){
+                    return 10;
+                }
+                return 5;
+            })
+    }
+
 
     /**
      *
@@ -225,9 +233,6 @@ define(["d3", "jquery"], function (d3, $) {
                         new_links.push(link);
                     }
                 })
-                //
-                //plot(new_nodes, new_links, 1);
-                //plot_links(links);
             });
 
         var node = self.group.append("g")
@@ -239,6 +244,9 @@ define(["d3", "jquery"], function (d3, $) {
                 return 5;
             })
             .attr("fill", function (d) {
+                if(self.attackIPToDataMap.hasOwnProperty(d.id)){
+                    return "red";
+                }
                 return color(d.group);
             })
             .call(d3.drag()

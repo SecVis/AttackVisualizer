@@ -5,7 +5,7 @@ requirejs.config({
     //waitSeconds: 100,
     paths:{
         "line-chart": "panel/line-chart",
-        "attack-bar-chart": "panel/attack-bar-chart",
+        "randomColor": "../../bower_components/randomcolor/randomColor",
         "jquery": "../../bower_components/jquery/dist/jquery.min",
         "bootstrap": "../../bower_components/bootstrap/dist/js/bootstrap.min",
         "colorbrewer": "../../bower_components/colorbrewer/colorbrewer",
@@ -16,9 +16,9 @@ requirejs.config({
         "rect-diag": "panel/rect-diag",
         "hourly-map": "panel/hourly-map",
         "read-menu" : "data/read-menu",
-        "randomColor": "../../bower_components/randomcolor/randomColor",
         "allColors": "data/allColors",
-        "attack-bar-chart-2": "panel/attack-bar-chart-2"
+        "attack-bar-chart-2": "panel/attack-bar-chart-2",
+        "legend": "panel/attacklegend"
     },
     shim: {
         //"d3-dsv":["d3"]

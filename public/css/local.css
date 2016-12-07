@@ -17,4 +17,9 @@
     shape-rendering: crispEdges;
 }
 
+.rect-diag-link{
+    fill: white;
+    stroke: black;
+    stroke-width: 0.7;
+}
 
