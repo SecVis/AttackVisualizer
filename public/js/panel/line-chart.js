@@ -129,9 +129,9 @@ define(["d3", "jquery"], function (d3, $) {
                 .attr("transform", "rotate(-90)");
 
             line_group.append("text")
-                .text(attackName)
-                .attr("y","10")
-                .attr("x",-(attackBlockHeight/2)-5)
+                .text(attackTotalCount)
+                .attr("x",(width-20))
+                .attr("y",(attackBlockHeight/2))
                 .style("text-anchor", "middle");
 
             i++;
