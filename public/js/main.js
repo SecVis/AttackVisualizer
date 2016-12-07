@@ -6,6 +6,7 @@ requirejs.config({
     paths:{
         "line-chart": "panel/line-chart",
         "attack-bar-chart": "panel/attack-bar-chart",
+        "randomColor": "../../bower_components/randomcolor/randomColor",
         "jquery": "../../bower_components/jquery/dist/jquery.min",
         "bootstrap": "../../bower_components/bootstrap/dist/js/bootstrap.min",
         "colorbrewer": "../../bower_components/colorbrewer/colorbrewer",
@@ -16,8 +17,8 @@ requirejs.config({
         "rect-diag": "panel/rect-diag",
         "hourly-map": "panel/hourly-map",
         "read-menu" : "data/read-menu",
-        "randomColor": "../../bower_components/randomcolor/randomColor",
-        "allColors": "data/allColors"
+        "allColors": "data/allColors",
+        "legend": "panel/attacklegend"
     },
     shim: {
         //"d3-dsv":["d3"]
@@ -26,7 +27,7 @@ requirejs.config({
     }
 });
 
-require(["load-data","read-menu"], function (loaddata,readMenu) {
+require(["load-data","read-menu","legend"], function (loaddata,readMenu,legend) {
     readMenu.init();
     loaddata.init("../data/2week/monday/both.llist");
 });

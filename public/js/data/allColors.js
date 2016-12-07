@@ -56,7 +56,7 @@ define(["d3", "jquery", "randomColor"], function (d3, $, randomColor) {
         });
 
 
-        console.log(attackColor[3]);
+        //console.log(attackColor[3]);
     }
 
     AllColors.prototype.getAttackColor = function () {

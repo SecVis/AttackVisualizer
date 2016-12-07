@@ -84,7 +84,7 @@ define(["d3"],function(d3){
             nodes.push({r: scale(links[index].value)});
         }
 
-        console.log(nodes)
+        //console.log(nodes)
 
         var simulation = d3.forceSimulation(nodes)
             .velocityDecay(0.2)

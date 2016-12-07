@@ -66,6 +66,8 @@ define(["d3", "jquery"], function (d3, $) {
 
         var self = this;
 
+        var attackColor = require("allColors").getAttackColor();
+
         //console.log(attackData);
         self.totalAttackCount = d3.keys(attackData).length;
         svg.attr("height", self.totalAttackCount * attackBlockHeight);
@@ -111,7 +113,7 @@ define(["d3", "jquery"], function (d3, $) {
             line_group.append("path")
                 .attr("d", line(d.time_count))
                 .attr("fill","none")
-                .attr("stroke","black")
+                .attr("stroke",attackColor[attackName])
                 .attr("stroke-width","1.5");
 
             var yAxisLeft = d3.axisLeft().scale(y).ticks(4);
@@ -123,6 +125,7 @@ define(["d3", "jquery"], function (d3, $) {
 
             line_group.append("text")
                 .text(attackName)
+                .attr("fill",attackColor[attackName])
                 .attr("y","10")
                 .attr("x",-(attackBlockHeight/2)-5)
                 .style("text-anchor", "middle")
@@ -130,6 +133,7 @@ define(["d3", "jquery"], function (d3, $) {
 
             line_group.append("text")
                 .text(attackTotalCount)
+                .attr("fill",attackColor[attackName])
                 .attr("x",(width-20))
                 .attr("y",(attackBlockHeight/2))
                 .style("text-anchor", "middle");

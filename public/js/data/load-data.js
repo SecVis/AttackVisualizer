@@ -1,8 +1,8 @@
 /**
  * Created by sunny on 12/2/16.
  */
-define(["d3", "node-link", "attack-bar-chart", "line-chart", "rect-diag", "hourly-map", "allColors"],
-    function (d3, nodeLink, attackBarChart, lineChart, rectDiag, hourlyMap,  allColors) {
+define(["d3", "node-link", "attack-bar-chart", "line-chart", "rect-diag", "hourly-map", "allColors","legend"],
+    function (d3, nodeLink, attackBarChart, lineChart, rectDiag, hourlyMap,  allColors, legend) {
 
         /**
          * This class is responsible for the modifiying the intruments
@@ -367,13 +367,13 @@ define(["d3", "node-link", "attack-bar-chart", "line-chart", "rect-diag", "hourl
                 }
 
                 allColors.init(nodesmap, linkVal, attackNameSet);
-
+                legend.init();
 
                 //initialze all the data structure
                 hourlyMap.init(heatMapHourly, dispatch)
                 nodeLink.init(nodes, links, dispatch);
                 rectDiag.init(links, dispatch);
-                //attackBarChart.init(modifiedAttackData, dispatch);
+                attackBarChart.init(modifiedAttackData, dispatch);
                 lineChart.init(lineChartData, dispatch);
 
             });

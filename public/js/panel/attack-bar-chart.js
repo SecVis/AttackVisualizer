@@ -161,7 +161,7 @@ define(["d3"],function(d3){
 
 
         stackedbargroup.attr("fill", function(d) {
-            console.log(d);
+            //console.log(d);
             return attackColor[d.key];
         });
 
