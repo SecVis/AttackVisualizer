@@ -15,8 +15,6 @@ define(["d3", "node-link", "attack-bar-chart", "line-chart", "rect-diag", "hourl
         var linkVal = {};
         var links = [];
         var nodes = [];
-        var largestVal = Number.MIN_VALUE;
-        var smallestVal = Number.MAX_VALUE;
         var attackData = {};
         var attackNameSet = new Set();
         var heatMapHourly = {};
@@ -72,6 +70,9 @@ define(["d3", "node-link", "attack-bar-chart", "line-chart", "rect-diag", "hourl
          */
         function nodeLinkCallBack(selectedNodes){
 
+            var largestVal = Number.MIN_VALUE;
+            var smallestVal = Number.MAX_VALUE;
+
             if(selectedNodes.length > 0) {
 
                 var sourceNodeMap = {};
@@ -82,13 +83,13 @@ define(["d3", "node-link", "attack-bar-chart", "line-chart", "rect-diag", "hourl
                     }
                 })
 
-                var selectedLinks = [];
+
                 links.forEach(function (link) {
                     if (sourceNodeMap.hasOwnProperty(link.source.id)
                         || sourceNodeMap.hasOwnProperty(link.target.id) ) {
 
-                        var val = linkVal[link.source.id][link.target.id];
-                        selectedLinks.push({value: val, source: link.source.id, target: link.target.id});
+                        //var val = linkVal[link.source.id][link.target.id];
+                        //selectedLinks.push({value: val, source: link.source.id, target: link.target.id});
 
                         if (!targetIDs.hasOwnProperty(link.target.id)) {
                             targetIDs[link.target.id] = {};
@@ -97,14 +98,79 @@ define(["d3", "node-link", "attack-bar-chart", "line-chart", "rect-diag", "hourl
                 });
 
                 var selNodes = [];
+                var selectedLinks = [];
                 for (var target in targetIDs) {
                     selNodes.push({id: nodesmap[target], group: 1});
                 }
+
                 for (var source in sourceNodeMap) {
                     selNodes.push({id: nodesmap[source], group: 5});
+
+                    for(var target in linkVal[source]){
+                        var value = linkVal[source][target]
+                        selectedLinks.push({value: value, source: source, target: target})
+
+                        if (largestVal < value) {
+                            largestVal = value;
+                        }
+                        if (smallestVal > value) {
+                            smallestVal = value;
+                        }
+                    }
                 }
 
                 nodeLink.reload(selNodes, selectedLinks);
+
+
+                //////////////////////////////////////ATTCK MAP DATA/////////////////////////
+
+                var modifiedAttackData = [];
+                var columns = [];
+                var i = 0;
+                for(var destIP in attackData){
+
+                    if(sourceNodeMap.hasOwnProperty(destIP) || targetIDs.hasOwnProperty(destIP)) {
+
+                            var attackObj = {};
+                            if (i == 0) {
+                                columns.push("destinationIP");
+                            }
+                            attackObj["destinationIP"] = destIP;
+                            attackObj["total"] = attackData[destIP].totalCount;
+                            for (var attackName in attackData[destIP].attacks) {
+                                attackObj[attackName] = attackData[destIP].attacks[attackName].value;
+                                if (i == 0) {
+                                    columns.push(attackName);
+                                }
+                            }
+                            if (i == 0) {
+                                columns.push("total");
+                            }
+                            i++;
+                            modifiedAttackData.push(attackObj);
+                    }
+                }
+
+                modifiedAttackData["columns"] = columns;
+
+                attackBarChart.reload(modifiedAttackData);
+
+                ///////////////////////////////////////////RECT DIAG///////////////////////////////
+
+                var scale = d3.scaleLinear()
+                    .domain([smallestVal, largestVal])
+                    .range([10, 50]);
+
+                selectedLinks.sort(descending);
+                for (var index = 0, yIndex = 0; index < selectedLinks.length; index++) {
+                    selectedLinks[index].height = scale(selectedLinks[index].value);
+                    selectedLinks[index].yIndex = yIndex;
+                    yIndex += selectedLinks[index].height + 3;
+                }
+
+                rectDiag.reload(selectedLinks);
+
+                ///////////////////////////////////////////////////////////////////////////////////
             }
             else{
                 nodes =[];
@@ -118,8 +184,9 @@ define(["d3", "node-link", "attack-bar-chart", "line-chart", "rect-diag", "hourl
 
                 for (var key in nodesmap) {
                     nodes.push({id: nodesmap[key], group: 1});
+                    links.push({value: val, source: src, target: dest})
                 }
-                nodeLink.init(nodes, links, dispatch);
+                nodeLink.reload(nodes, links);
             }
         }
         dispatch.on("nodeLinkCallBack",nodeLinkCallBack);
@@ -130,6 +197,10 @@ define(["d3", "node-link", "attack-bar-chart", "line-chart", "rect-diag", "hourl
          * @param _instance
          */
         LoadData.prototype.init = function (_files) {
+
+
+            var largestVal = Number.MIN_VALUE;
+            var smallestVal = Number.MAX_VALUE;
 
             //added the unknown name in the attack set
             attackNameSet.add("Unknown")

@@ -83,6 +83,44 @@ define(["d3"],function(d3){
         svg.attr("height",svgHeight + 10);
     }
 
+    RectDiag.prototype.reload = function (links) {
+
+        svg.selectAll("rect").remove();
+
+        var svgHeight = 0;
+        var links = svg.selectAll("rect").data(links);
+        var rectangle = links.enter().append("rect").merge(links);
+
+        rectangle.attr("height",function(d){
+                svgHeight += (d.height + 10);
+                return d.height;
+            })
+            .attr("width",bar_width)
+            .attr("x",20)
+            .attr("y",function(d){
+                return d.yIndex;
+            })
+            //.attr("rx",20)
+            //.attr("ry",20)
+            .style("stroke","black")
+            .style("stroke-width","2")
+        //.on("mouseover",function(d){
+        //    group.selectAll("line")
+        //        .style("stroke",function(link){
+        //            if(d.source.id == link.source.id && d.target.id == link.target.id){
+        //                return "red";
+        //            }
+        //        })
+        //        .style("stroke-opacity",function(link){
+        //            if(d.source.id == link.source.id && d.target.id == link.target.id){
+        //                return 1;
+        //            }
+        //        });
+        //})
+
+        svg.attr("height",svgHeight + 10);
+    }
+
 
     return RectDiag.getInstance();
 })

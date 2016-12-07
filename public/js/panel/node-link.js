@@ -4,7 +4,7 @@
 define(["d3", "jquery"], function (d3, $) {
 
     /**
-     * This class is responsible for the modifiying the intruments
+     * This class is responsible for the modifying the instruments
      * on the ui
      * @type {null}
      */
@@ -185,12 +185,7 @@ define(["d3", "jquery"], function (d3, $) {
         //        self.plotNodeLink(links);
         //    });
 
-
-
         self.plotNodeLink(nodes, links);
-
-
-
     }
 
     var brush = d3.brush()
@@ -204,11 +199,6 @@ define(["d3", "jquery"], function (d3, $) {
      */
     NodeLink.prototype.plotNodeLink = function (nodes, links) {
         var self = this;
-
-        console.log(self.group)
-
-
-
 
         self.group.selectAll("*").remove();
 
