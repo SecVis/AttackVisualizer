@@ -11,9 +11,19 @@ define(["d3"],function(d3){
      */
 
     var instance = null;
-    var svg = d3.select("#rect-diag"),
-        width = +svg.attr("width"),
-        height = +svg.attr("height");
+    //var svg = d3.select("#rect-diag"),
+    //    width = +svg.attr("width"),
+    //    height = +svg.attr("height");
+
+
+
+
+
+    var canvas = document.querySelector("canvas"),
+        context = canvas.getContext("2d"),
+        width = canvas.width,
+        height = canvas.height,
+        tau = 2 * Math.PI;
 
     var bar_width = 250;
 
@@ -49,76 +59,112 @@ define(["d3"],function(d3){
      */
     RectDiag.prototype.init = function (links) {
 
-        var svgHeight = 0;
-        var links = svg.selectAll("rect").data(links);
-        var rectangle = links.enter().append("rect").merge(links);
 
-        rectangle.attr("height",function(d){
-                svgHeight += (d.height + 3);
-                return d.height;
-            })
-            .attr("width",bar_width)
-            .attr("x",20)
-            .attr("y",function(d){
-                return d.yIndex;
-            })
-            //.attr("rx",20)
-            //.attr("ry",20)
-            .style("stroke","black")
-            .style("stroke-width","2")
-            //.on("mouseover",function(d){
-            //    group.selectAll("line")
-            //        .style("stroke",function(link){
-            //            if(d.source.id == link.source.id && d.target.id == link.target.id){
-            //                return "red";
-            //            }
-            //        })
-            //        .style("stroke-opacity",function(link){
-            //            if(d.source.id == link.source.id && d.target.id == link.target.id){
-            //                return 1;
-            //            }
-            //        });
-            //})
+        d3.select("canvas").selectAll("*").remove();
 
-        svg.attr("height",svgHeight + 10);
+        var largestVal = Number.MIN_VALUE;
+        var smallestVal = Number.MAX_VALUE;
+
+        for(var index = 0; index < links.length ; index++){
+            if(largestVal < links[index].value){
+                largestVal = links[index].value
+            }
+            if(smallestVal > links[index].value){
+                smallestVal = links[index].value
+            }
+        }
+
+        var scale = d3.scaleLinear()
+            .domain([smallestVal, largestVal])
+            .range([3, 50]);
+
+
+        var nodes = [];
+        for( var index = 0 ; index < links.length ; index++ ){
+            nodes.push({r: scale(links[index].value)});
+        }
+
+        console.log(nodes)
+
+        var simulation = d3.forceSimulation(nodes)
+            .velocityDecay(0.2)
+            .force("x", d3.forceX().strength(0.002))
+            .force("y", d3.forceY().strength(0.002))
+            .force("collide", d3.forceCollide().radius(function(d) { return d.r + 0.5; }).iterations(2))
+            .on("tick", ticked);
+
+
+        function ticked() {
+            context.clearRect(0, 0, width, height);
+            context.save();
+            context.translate(width / 2, height / 2);
+
+            context.beginPath();
+            nodes.forEach(function(d) {
+                context.moveTo(d.x + d.r, d.y);
+                context.arc(d.x, d.y, d.r, 0, tau);
+            });
+            context.fillStyle = "#ddd";
+            context.fill();
+            context.strokeStyle = "#333";
+            context.stroke();
+
+            context.restore();
+        }
+
     }
 
     RectDiag.prototype.reload = function (links) {
 
-        svg.selectAll("rect").remove();
+        d3.select("canvas").selectAll("*").remove();
 
-        var svgHeight = 0;
-        var links = svg.selectAll("rect").data(links);
-        var rectangle = links.enter().append("rect").merge(links);
+        var largestVal = Number.MIN_VALUE;
+        var smallestVal = Number.MAX_VALUE;
 
-        rectangle.attr("height",function(d){
-                svgHeight += (d.height + 10);
-                return d.height;
-            })
-            .attr("width",bar_width)
-            .attr("x",20)
-            .attr("y",function(d){
-                return d.yIndex;
-            })
-            //.attr("rx",20)
-            //.attr("ry",20)
-            .style("stroke","black")
-            .style("stroke-width","2")
-        //.on("mouseover",function(d){
-        //    group.selectAll("line")
-        //        .style("stroke",function(link){
-        //            if(d.source.id == link.source.id && d.target.id == link.target.id){
-        //                return "red";
-        //            }
-        //        })
-        //        .style("stroke-opacity",function(link){
-        //            if(d.source.id == link.source.id && d.target.id == link.target.id){
-        //                return 1;
-        //            }
-        //        });
-        //})
+        for(var index = 0; index < links.length ; index++){
+            if(largestVal < links[index].value){
+                largestVal = links[index].value
+            }
+            if(smallestVal > links[index].value){
+                smallestVal = links[index].value
+            }
+        }
 
-        svg.attr("height",svgHeight + 10);
+        var scale = d3.scaleLinear()
+            .domain([smallestVal, largestVal])
+            .range([3, 50]);
+
+
+        var nodes = [];
+        for( var index = 0 ; index < links.length ; index++ ){
+            nodes.push({r: scale(links[index].value)});
+        }
+
+        var simulation = d3.forceSimulation(nodes)
+            .velocityDecay(0.2)
+            .force("x", d3.forceX().strength(0.002))
+            .force("y", d3.forceY().strength(0.002))
+            .force("collide", d3.forceCollide().radius(function(d) { return d.r + 0.5; }).iterations(2))
+            .on("tick", ticked);
+
+
+        function ticked() {
+            context.clearRect(0, 0, width, height);
+            context.save();
+            context.translate(width / 2, height / 2);
+
+            context.beginPath();
+            nodes.forEach(function(d) {
+                context.moveTo(d.x + d.r, d.y);
+                context.arc(d.x, d.y, d.r, 0, tau);
+            });
+            context.fillStyle = "#ddd";
+            context.fill();
+            context.strokeStyle = "#333";
+            context.stroke();
+
+            context.restore();
+        }
     }
 
 

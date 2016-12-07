@@ -103,16 +103,15 @@ define(["d3", "node-link", "attack-bar-chart", "line-chart", "rect-diag", "hourl
 
                 var selNodes = [];
                 var selectedLinks = [];
-                for (var target in targetIDs) {
-                    selNodes.push({id: nodesmap[target], group: 1});
-                }
-
                 for (var source in sourceNodeMap) {
                     selNodes.push({id: nodesmap[source], group: 5});
 
                     for(var target in linkVal[source]){
                         var value = linkVal[source][target]
                         selectedLinks.push({value: value, source: source, target: target})
+
+                        selNodes.push({id: nodesmap[target], group: 5});
+
 
                         if (largestVal < value) {
                             largestVal = value;
@@ -122,6 +121,10 @@ define(["d3", "node-link", "attack-bar-chart", "line-chart", "rect-diag", "hourl
                         }
                     }
                 }
+
+
+
+
 
                 nodeLink.reload(selNodes, selectedLinks);
 
