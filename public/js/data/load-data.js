@@ -367,9 +367,10 @@ define(["d3", "node-link", "attack-bar-chart", "line-chart", "rect-diag", "hourl
                 hourlyMap.init(heatMapHourly, dispatch)
                 nodeLink.init(nodes, links, dispatch);
                 rectDiag.init(links, dispatch);
-                attackBarChart.init(modifiedAttackData, dispatch);
+                //attackBarChart.init(modifiedAttackData, dispatch);
                 lineChart.init(lineChartData, dispatch);
             });
         }
         return LoadData.getInstance();
     })
+
