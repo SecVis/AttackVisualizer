@@ -14,7 +14,8 @@ requirejs.config({
         "node-link": "panel/node-link",
         "load-data": "data/load-data",
         "rect-diag": "panel/rect-diag",
-        "hourly-map": "panel/hourly-map"
+        "hourly-map": "panel/hourly-map",
+        "read-menu" : "data/read-menu"
     },
     shim: {
         //"d3-dsv":["d3"]
@@ -22,8 +23,7 @@ requirejs.config({
     }
 });
 
-require(["load-data"], function (loaddata) {
-
-
-    loaddata.init("../../")
+require(["load-data","read-menu"], function (loaddata,readMenu) {
+    readMenu.init();
+    loaddata.init("../data/2week/monday/both.llist");
 });

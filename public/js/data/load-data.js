@@ -22,6 +22,9 @@ define(["d3", "node-link", "attack-bar-chart", "line-chart", "rect-diag", "hourl
         var dispatch = d3.dispatch("nodeLinkCallBack", "hourlyMapCallBack",
             "rectDiagCallBack", "attackBarChartCallBack", "lineChartCallBack");
 
+        //added the unknown name in the attack set
+        attackNameSet.add("Unknown")
+
 
         /**
          * 1. Check if instance is null then throw error
@@ -62,6 +65,7 @@ define(["d3", "node-link", "attack-bar-chart", "line-chart", "rect-diag", "hourl
                 return -1;
             return 0;
         }
+
 
 
         /**
