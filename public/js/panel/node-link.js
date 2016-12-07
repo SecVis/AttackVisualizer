@@ -22,7 +22,7 @@ define(["d3", "jquery"], function (d3, $) {
         .force("center", d3.forceCenter(width / 2, height / 2));
 
     var color = d3.scaleOrdinal(d3.schemeCategory20);
-
+    var dispatch;
     /**
      *
      * @param d
@@ -53,6 +53,10 @@ define(["d3", "jquery"], function (d3, $) {
     }
 
     function brushended(){
+
+        console.log("brus")
+
+        var arr = [];
         var selection = d3.event.selection;
         //console.log(selection)
         svg.select(".nodes")
@@ -61,9 +65,12 @@ define(["d3", "jquery"], function (d3, $) {
                 if(selection[0][0] <= d.x && d.x <= selection[1][0]
                     && selection[0][1] <= d.y && d.y <= selection[1][1]) {
 
-                    console.log(d)
+                    //push the element in the array
+                    arr.push(d);
                 }
-        })
+            })
+
+        dispatch.call("nodeLinkCallBack",{},arr);
     }
 
     /**
@@ -112,7 +119,7 @@ define(["d3", "jquery"], function (d3, $) {
      * @param nodes
      * @param links
      */
-    NodeLink.prototype.init = function (nodes, links) {
+    NodeLink.prototype.init = function (nodes, links, _dispatch) {
         var self = this;
 
         //svg.append("rect").attr("width", width)
@@ -142,7 +149,53 @@ define(["d3", "jquery"], function (d3, $) {
         self.group = svg.append("g");
         self.plotNodeLink(nodes, links);
 
+        dispatch = _dispatch;
+
     }
+
+    /**
+     *
+     * @param nodes
+     * @param links
+     */
+    NodeLink.prototype.reload = function (nodes, links) {
+        var self = this;
+
+        //svg.append("rect").attr("width", width)
+        //    .attr("height", height)
+        //    .style("fill", "white")
+        //    .on("click", function () {
+        //
+        //        links = [];
+        //        nodes = [];
+        //
+        //        for (var src in linkVal) {
+        //            for (var dest in linkVal[src]) {
+        //                var val = linkVal[src][dest];
+        //
+        //                links.push({value: val, source: src, target: dest})
+        //            }
+        //        }
+        //
+        //        for (var key in nodesmap) {
+        //            nodes.push({id: nodesmap[key], group: 1});
+        //        }
+        //
+        //        //plot(nodes,links);
+        //        self.plotNodeLink(links);
+        //    });
+
+
+
+        self.plotNodeLink(nodes, links);
+
+
+
+    }
+
+    var brush = d3.brush()
+        //.on("brush", brushed);
+        .on("end",brushended)
 
     /**
      *
@@ -152,9 +205,9 @@ define(["d3", "jquery"], function (d3, $) {
     NodeLink.prototype.plotNodeLink = function (nodes, links) {
         var self = this;
 
-        var brush = d3.brush()
-            //.on("brush", brushed);
-            .on("end",brushended)
+        console.log(self.group)
+
+
 
 
         self.group.selectAll("*").remove();

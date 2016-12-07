@@ -48,7 +48,7 @@ define(["d3"],function(d3){
      *
      * @param _data
      */
-    AttackBarChart.prototype.init = function (_data) {
+    AttackBarChart.prototype.init = function (_data, _dispatch) {
         var self = this;
 
         _data.sort(function(a, b) { return b.total - a.total; });
@@ -69,7 +69,6 @@ define(["d3"],function(d3){
             .nice();
         z.domain(_data.columns.slice(1,_data.columns.length-1));
 
-        //console.log("1")
         var stackedbargroup = stackedbarchart.selectAll(".attackbarchart")
             .data(stack.keys(_data.columns.slice(1,_data.columns.length-1))(_data));
 
@@ -124,7 +123,6 @@ define(["d3"],function(d3){
                             return r._x;
                     })
             });
-        //console.log("2");
     }
 
 

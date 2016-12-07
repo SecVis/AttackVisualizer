@@ -50,7 +50,7 @@ define(["d3", "jquery"], function (d3, $) {
      * @param nodes
      * @param links
      */
-    LineChart.prototype.init = function (attackData) {
+    LineChart.prototype.init = function (attackData,_dispatch) {
 
         var self = this;
 

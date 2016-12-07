@@ -66,19 +66,19 @@ define(["d3"],function(d3){
             //.attr("ry",20)
             .style("stroke","black")
             .style("stroke-width","2")
-            .on("mouseover",function(d){
-                group.selectAll("line")
-                    .style("stroke",function(link){
-                        if(d.source.id == link.source.id && d.target.id == link.target.id){
-                            return "red";
-                        }
-                    })
-                    .style("stroke-opacity",function(link){
-                        if(d.source.id == link.source.id && d.target.id == link.target.id){
-                            return 1;
-                        }
-                    });
-            })
+            //.on("mouseover",function(d){
+            //    group.selectAll("line")
+            //        .style("stroke",function(link){
+            //            if(d.source.id == link.source.id && d.target.id == link.target.id){
+            //                return "red";
+            //            }
+            //        })
+            //        .style("stroke-opacity",function(link){
+            //            if(d.source.id == link.source.id && d.target.id == link.target.id){
+            //                return 1;
+            //            }
+            //        });
+            //})
 
         svg.attr("height",svgHeight + 10);
     }

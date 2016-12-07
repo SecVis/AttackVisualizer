@@ -2,7 +2,7 @@
  * Created by sunny on 12/1/16.
  */
 requirejs.config({
-    waitSeconds: 100,
+    //waitSeconds: 100,
     paths:{
         "line-chart": "panel/line-chart",
         "attack-bar-chart": "panel/attack-bar-chart",
@@ -15,7 +15,6 @@ requirejs.config({
         "load-data": "data/load-data",
         "rect-diag": "panel/rect-diag",
         "hourly-map": "panel/hourly-map"
-
     },
     shim: {
         //"d3-dsv":["d3"]
@@ -24,5 +23,7 @@ requirejs.config({
 });
 
 require(["load-data"], function (loaddata) {
+
+
     loaddata.init("../../")
 });

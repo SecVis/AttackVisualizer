@@ -48,7 +48,7 @@ define(["d3"],function(d3){
      *
      * @param _data
      */
-    HourlyMap.prototype.init = function (_data) {
+    HourlyMap.prototype.init = function (_data, _dispatch) {
         var self = this;
 
 
