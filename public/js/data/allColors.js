@@ -54,7 +54,6 @@ define(["d3", "jquery", "randomColor"], function (d3, $, randomColor) {
         attacks.forEach(function(attackName){
             attackColor[attackName] = randomColor();
         });
-
     }
 
     AllColors.prototype.getAttackColor = function () {
