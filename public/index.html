@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, shrink-to-fit=no, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Simple Sidebar - Start Bootstrap Template</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/simple-sidebar.css" rel="stylesheet">
+
+    <!-- Local CSS -->
+    <link href="css/local.css" rel="stylesheet">
+    <link href="css/navbar-style.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+<div id="wrapper">
+
+    <!-- Sidebar -->
+    <div id="sidebar-wrapper">
+        <ul class="sidebar-nav">
+            <li class="sidebar-brand">
+                <a href="#">
+                    Menu
+                </a>
+            </li>
+            <li>
+                <a href="index.html">Dashboard</a>
+            </li>
+            <li id="read-data">
+                <a href="#">Week1</a>
+                <ul>
+                    <li>
+                        <a id="11">Monday</a>
+                    </li>
+                    <li>
+                        <a id="12">Tuesday</a>
+                    </li>
+                    <li>
+                        <a id="13">Wednesday</a>
+                    </li>
+                    <li>
+                        <a id="14">Thursday</a>
+                    </li>
+                    <li>
+                        <a id="15">Friday</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">Week2</a>
+                <ul>
+                    <li>
+                        <a id="21">Monday</a>
+                    </li>
+                    <li>
+                        <a id="22">Tuesday</a>
+                    </li>
+                    <li>
+                        <a id="23">Wednesday</a>
+                    </li>
+                    <li>
+                        <a id="24">Thursday</a>
+                    </li>
+                    <li>
+                        <a id="25">Friday</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a>Legend</a>
+                <div style="overflow:scroll; height:400px;">
+                    <svg id="attack-legend" width="200" height="300"></svg>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <!-- /#sidebar-wrapper -->
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+        <a href="#menu-toggle" class="btn btn-default" id="menu-toggle"><<</a>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+
+                    <h1>DARPA IDS Attack Visualizer</h1>
+                    <h3>An Interactive attack data visualization for intrusion detection and analysis</h3>
+                </div>
+            </div>
+            <div class="row">
+                <h3>Network and Traffic Flow</h3>
+                <p>This chart visualizes the network traffic and connections</p>
+                <!--Carousel start-->
+                <div id="carousel-example-generic" class="carousel slide" data-ride="carousel" data-interval=360000>
+                    <!-- Indicators -->
+                    <!-- Wrapper for slides -->
+                    <div class="carousel-inner">
+                        <div class="item active">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <svg id="node-link" width="1500" height="1200"></svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <!--<svg id="rect-diag" width="750" height="500"></svg>-->
+                                    <svg id="rect-diag" x="200" width="1000" height="1200"></svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Controls -->
+                    <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                        <span class="glyphicon glyphicon-chevron-left"></span>
+                    </a>
+                    <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <h3>Attack Chart</h3>
+                <p>This chart visualizes the attacks on different destination IP addresses</p>
+                <div class="col-lg-6">
+                    <svg id="attack-bar-chart" width="750" height="500"></svg>
+
+                </div>
+                <div class="col-lg-6">
+                    <svg id="attack-bar-chart-zoom" width="750" height="500"></svg>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h3>Attack Hourly Intensity Heat Map</h3>
+                    <p>This chart shows the intensity of attacks on different hours of the day</p>
+                    <svg id="hourly-map" height="100"></svg>
+                </div>
+            </div>
+            <div class="row">
+                <h3>Attack Time Series Chart</h3>
+                <p>This chart visualizes the different attacks at different minutes of the day</p>
+                <div class="col-md-12" style="overflow:scroll; height:400px; width:1600px">
+                    <svg id="line-chart" width="1500" height="900"></svg>
+                </div>
+            </div>
+            <!--<div class="row">-->
+                <!--<div class="col-sm-8" style="overflow: auto; height: 500px;">-->
+                    <!--<svg id="node-link" width="1500" height="1200"></svg>-->
+                <!--</div>-->
+                <!--<div class="col-sm-4" style="overflow: auto;">-->
+                    <!--<div class="row">-->
+                        <!--<div class="col-sm-12" style="overflow: auto; height: 500px;">-->
+                            <!--<svg id="attack-bar-chart" width="280" height="900"></svg>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="row">-->
+                        <!--&lt;!&ndash;<div class="row">&ndash;&gt;-->
+                            <!--&lt;!&ndash;<div class="col-sm-12" style="background-color: #ec971f;">&ndash;&gt;-->
+                                <!--&lt;!&ndash;<h3>sunny</h3>&ndash;&gt;-->
+                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                        <!--<div class="row">-->
+                            <!--<div class="col-sm-12" style="overflow: auto; height: 300px;">-->
+                                <!--<svg id="rect-diag" width="300" height="900"></svg>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="row">-->
+                <!--<div class="col-lg-12" style="overflow: auto;">-->
+                    <!--<h3>Column 1</h3>-->
+                    <!--<svg id="line-chart" width="1200" height="900"></svg>-->
+                <!--</div>-->
+            <!--</div>-->
+        </div>
+    </div>
+    <!-- /#page-content-wrapper -->
+
+</div>
+<!-- /#wrapper -->
+
+<!-- jQuery -->
+<script src="../bower_components/jquery/dist/jquery.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+<!-- Menu Toggle Script -->
+<script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+</script>
+
+<script data-main="../public/js/main" src="../bower_components/requirejs/require.js"></script>
+
+</body>
+
+</html>

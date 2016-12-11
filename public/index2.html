@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+
+<div style="width: 100%; overflow: hidden;">
+    <div style="width: 1200px; float: left;">
+        <svg id="node-link" width="1200" height="900"></svg>
+    </div>
+    <div style="overflow: scroll ;margin-left: 1200px;">
+        <svg id="rect-diag" width="300" height="5000"></svg>
+    </div>
+</div>
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://d3js.org/d3-dsv.v1.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+<script>
+
+    var nodesmap = {};
+    var linkVal = {};
+    var links = [];
+    var nodes = [];
+    var uniqueIndex = 0;
+    var largestVal = Number.MIN_VALUE;
+    var smallestVal = Number.MAX_VALUE;
+    var scale;
+    var bar_width = 250;
+
+
+    var rectDiagSVG = d3.select("#rect-diag"),
+            width = +rectDiagSVG.attr("width"),
+            height = +rectDiagSVG.attr("height");
+
+    var nodeLinkSVG = d3.select("#node-link"),
+            width = +nodeLinkSVG.attr("width"),
+            height = +nodeLinkSVG.attr("height");
+
+    nodeLinkSVG.append("rect").attr("width",width)
+            .attr("height",height)
+            .style("fill","white")
+            .on("click",function(){
+
+                links = [];
+                nodes = [];
+
+                for(var src in linkVal){
+                    for(var dest in linkVal[src]){
+                        var val = linkVal[src][dest];
+
+                        links.push({value:val,source:src,target:dest})
+                    }
+                }
+
+                for(var key in nodesmap){
+                    nodes.push({id: nodesmap[key], group: 1});
+                }
+
+                plot(nodes,links, 0)
+                plot_links(links);
+            });
+
+    var group = nodeLinkSVG.append("g")
+
+    var color = d3.scaleOrdinal(d3.schemeCategory20);
+
+    var simulation = d3.forceSimulation()
+            .force("link", d3.forceLink().id(function(d) { return d.id; }))
+            .force("charge", d3.forceManyBody())
+            .force("center", d3.forceCenter(width / 2, height / 2));
+
+
+
+    var dsv = d3.dsvFormat(" ");
+
+    d3.text("../data/tcpdump.csv").get(function(error,rows){
+
+        if (error) throw error;
+        var data = dsv.parse(rows);
+
+        data.forEach(function (d){
+            if (!nodesmap.hasOwnProperty(d.src)) {
+                nodesmap[d.src] = d.src;
+            }
+            if (!nodesmap.hasOwnProperty(d.dest)) {
+                nodesmap[d.dest] = d.dest;
+            }
+
+            var src = nodesmap[d.src];
+            var dest = nodesmap[d.dest];
+
+            if(!linkVal.hasOwnProperty(src)){
+                linkVal[src] = {}
+            }
+            if(!linkVal[src].hasOwnProperty(dest)){
+                linkVal[src][dest] = 0;
+            }
+
+            linkVal[src][dest]++;
+        });
+
+        for(var src in linkVal){
+            for(var dest in linkVal[src]){
+                var val = linkVal[src][dest];
+                links.push({value:val,source:src,target:dest})
+
+                if(largestVal < val){
+                    largestVal = val;
+                }
+                if(smallestVal > val){
+                    smallestVal = val;
+                }
+            }
+        }
+
+        scale = d3.scaleLinear()
+                .domain([smallestVal,largestVal])
+                .range([10,50]);
+
+        links.sort(compare);
+        for(var index = 0, yIndex = 0; index < links.length; index++){
+            links[index].height = scale(links[index].value);
+            links[index].yIndex = yIndex;
+            yIndex += links[index].height;
+        }
+
+        for(var key in nodesmap){
+            nodes.push({id: nodesmap[key], group: 1});
+        }
+
+        plot(nodes,links, 0);
+        plot_links(links);
+    });
+
+    function plot_links(links){
+        var links = rectDiagSVG.selectAll("rect").data(links);
+        var rectangle = links.enter().append("rect").merge(links);
+        rectangle.attr("height",function(d){
+                    return d.height;
+                })
+                .attr("width",bar_width)
+                .attr("y",function(d){
+                    return d.yIndex;
+                })
+                .on("mouseover",function(d){
+                    group.selectAll("line")
+                        .style("stroke",function(link){
+                            if(d.source.id == link.source.id && d.target.id == link.target.id){
+                                return "red";
+                            }
+                        })
+                        .style("stroke-opacity",function(link){
+                            if(d.source.id == link.source.id && d.target.id == link.target.id){
+                                return 1;
+                            }
+                        });
+                })
+
+    }
+
+    function plot(nodes,links){
+
+        group.selectAll("*").remove();
+
+        var link = group.append("g")
+                .attr("class", "links")
+                .selectAll("line")
+                .data(links)
+                .enter().append("line")
+                .attr("stroke-width", function(d) { return Math.sqrt(d.value); })
+                .on("click",function(d){
+
+                    var new_nodes = [];
+                    nodes.forEach(function(node){
+                        if(node.id == d.source.id || node.id == d.target.id){
+                            new_nodes.push(node)
+                        }
+                    })
+
+                    var new_links = [];
+                    links.forEach(function(link){
+                        if( link.source.id == d.source.id && link.target.id == d.target.id ){
+                            new_links.push(link);
+                        }
+                    })
+
+                    plot(new_nodes, new_links, 1);
+                    plot_links(links);
+                });
+
+        var node = group.append("g")
+                .attr("class", "nodes")
+                .selectAll("circle")
+                .data(nodes)
+                .enter().append("circle")
+                .attr("r", function(){
+                    return 5;
+                })
+                .attr("fill", function(d) { return color(d.group); })
+                .call(d3.drag()
+                        .on("start", dragstarted)
+                        .on("drag", dragged)
+                        .on("end", dragended))
+                .on("click",function(d){
+
+                    var new_links = [];
+                    var selected_nodes = [];
+                    links.forEach(function(link){
+                        if( link.source.id == d.id){
+                            new_links.push(link);
+                            selected_nodes.push(link.source.id);
+                            selected_nodes.push(link.target.id);
+                        }
+                    })
+
+                    var new_nodes = [];
+                    nodes.forEach(function(node){
+                        if(-1 != $.inArray(node.id,selected_nodes)){
+                            new_nodes.push(node)
+                        }
+                    })
+
+
+                    plot(new_nodes, new_links, 1);
+                });
+
+
+        node.append("title")
+                .text(function(d) { return d.id; });
+
+        simulation
+                .nodes(nodes)
+                .on("tick", ticked);
+
+        simulation.force("link")
+                .links(links);
+
+        function ticked() {
+            link
+                    .attr("x1", function(d) { return d.source.x; })
+                    .attr("y1", function(d) { return d.source.y; })
+                    .attr("x2", function(d) { return d.target.x; })
+                    .attr("y2", function(d) { return d.target.y; });
+
+            node
+                    .attr("cx", function(d) { return d.x; })
+                    .attr("cy", function(d) { return d.y; });
+        }
+    }
+
+    function dragstarted(d) {
+        if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+    }
+
+    function dragged(d) {
+        d.fx = d3.event.x;
+        d.fy = d3.event.y;
+    }
+
+    function dragended(d) {
+        if (!d3.event.active) simulation.alphaTarget(0);
+        d.fx = null;
+        d.fy = null;
+    }
+
+    function compare(a,b) {
+        if (a.value < b.value)
+            return 1;
+        if (a.value > b.value)
+            return -1;
+        return 0;
+    }
+
+</script>
