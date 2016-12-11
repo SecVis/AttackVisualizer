@@ -1,12 +1,7 @@
 /**
  * Created by sunny on 12/5/16.
  */
-<<<<<<< HEAD
 define(["d3","tooltip"],function(d3,tooltip){
-=======
-define(["d3"],function(d3){
->>>>>>> d11d3c03a9ab457a3905aca38cb0bdcbc49c283c
-
 
     /**
      * This class is responsible for the modifiying the intruments
@@ -23,10 +18,6 @@ define(["d3"],function(d3){
 
 
 
-<<<<<<< HEAD
-
-=======
->>>>>>> d11d3c03a9ab457a3905aca38cb0bdcbc49c283c
     //var canvas = document.querySelector("canvas"),
     //    context = canvas.getContext("2d"),
     //    width = canvas.width,
@@ -80,11 +71,7 @@ define(["d3"],function(d3){
 
         var self = this;
 
-<<<<<<< HEAD
         var tip = tooltip.getToolTip2();
-
-=======
->>>>>>> d11d3c03a9ab457a3905aca38cb0bdcbc49c283c
         d3.select("#rect-diag").selectAll("*").remove();
 
 
@@ -122,10 +109,7 @@ define(["d3"],function(d3){
             .size([svg.attr("width"), svg.attr("height")])
             .padding(1.5);
         svg.attr("class", "bubble");
-<<<<<<< HEAD
         svg.call(tip);
-=======
->>>>>>> d11d3c03a9ab457a3905aca38cb0bdcbc49c283c
 
         var nodes = d3.hierarchy(dataset)
             .sum(function(d) { return d.responseCount; });
@@ -151,7 +135,6 @@ define(["d3"],function(d3){
                 svg.selectAll("circle").style("fill","lightgrey");
                 d3.select(this).style("fill","green");
                 self.dispatch.call("rectDiagCallBack",{}, d.data.link);
-<<<<<<< HEAD
             })
             .on("mouseover",function(d){
                 var message = "<strong>Src - "
@@ -163,9 +146,6 @@ define(["d3"],function(d3){
                 tip.show(message);
             })
             .on("mouseout", tip.hide);
-=======
-            });
->>>>>>> d11d3c03a9ab457a3905aca38cb0bdcbc49c283c
 
 
         d3.select(self.frameElement)
