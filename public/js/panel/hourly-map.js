@@ -53,7 +53,6 @@ define(["d3"],function(d3){
 
         svg.selectAll("*").remove();
 
-
         //console.log(svg.node().parentNode.getBoundingClientRect());
 
         var entries = d3.entries(_data);

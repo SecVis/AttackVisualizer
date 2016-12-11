@@ -18,6 +18,7 @@ define(["d3","tooltip"],function(d3,tooltip){
 
 
 
+
     //var canvas = document.querySelector("canvas"),
     //    context = canvas.getContext("2d"),
     //    width = canvas.width,
@@ -72,6 +73,7 @@ define(["d3","tooltip"],function(d3,tooltip){
         var self = this;
 
         var tip = tooltip.getToolTip2();
+
         d3.select("#rect-diag").selectAll("*").remove();
 
 
